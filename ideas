@@ -1,0 +1,25 @@
+[ENVELOP]
+[QUERY]
+[SQL QUERY]
+[HASH QUERY]
+[SQL RESULT]
+[HASH RESULT]
+[QUERy]
+[SERVER]
+[SERVER DETAILS]
+[HASH DETAILS]
+[SERVER]
+[ENVELOP]
+
+-----------------------------------------------------
+2 modes:
+- Safe => data integrity
+- Secured => data encryption
+
+Safe mode: the server response uses an envelop with a AES hash using its private key, the verification can be done by any client using the public key
+
+Secure mode: the client send encrypted queries and/or data
+Secured query: AES encryption of queries using the public key, the server use its private key for reading the query to be executed
+Secured data: AES encryption of data stored encrypted at server level, the encryption is done using a client private key.
+
+Add audit trail system...?
