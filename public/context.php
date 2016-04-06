@@ -20,7 +20,7 @@ function __autoload($className) {
 }
 
 try {
-	BalooContext::$pdo = new BalooPDO('a162787_packman', 'localhost', 'a162787_packman', 'packman');
+	//BalooContext::$pdo = new BalooPDO('a162787_packman', 'localhost', 'a162787_packman', 'packman');
 } catch(Exception $e) {
 	echo 'ERROR: '. $e->getMessage() . PHP_EOL;
 	exit($e->getCode());
