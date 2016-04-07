@@ -1,0 +1,167 @@
+{
+	"pack":	{
+		"datasourcetype": {
+			"name": "TRAM4",
+			"version": "0"
+		},
+		"datasource": {
+			"name": "TRAM4report",
+			"version": "1.0",
+			"type": "TRAM4",
+			"entities": [
+				{ "name": "oc_bloc", "properties": [
+						{ "name": "id", "type": "integer" },
+						{ "name": "date", "type": "datetime" },
+						{ "name": "palier", "type": "string" },
+						{ "name": "bloc", "type": "integer" },
+						{ "name": "phase", "type": "integer" },
+						{ "name": "typerec", "type": "integer" },
+						{ "name": "priorite", "type": "integer" },
+						{ "name": "NR_NF", "type": "integer" },
+						{ "name": "FDT", "type": "integer" },
+						{ "name": "OK", "type": "integer" },
+						{ "name": "KO", "type": "integer" },
+						{ "name": "NC", "type": "integer" },
+						{ "name": "NA", "type": "integer" },
+						{ "name": "NR", "type": "integer" }
+						]
+				},
+				{ "name": "oc_projet", "properties": [
+						{ "name": "id", "type": "integer" },
+						{ "name": "date", "type": "datetime" },
+						{ "name": "palier", "type": "string" },
+						{ "name": "bloc", "type": "integer" },
+						{ "name": "phase", "type": "integer" },
+						{ "name": "projet", "type": "integer" },
+						{ "name": "priorite", "type": "integer" },
+						{ "name": "contrib", "type": "integer" },
+						{ "name": "FDT", "type": "integer" },
+						{ "name": "OK", "type": "integer" },
+						{ "name": "KO", "type": "integer" },
+						{ "name": "NC", "type": "integer" },
+						{ "name": "NA", "type": "integer" },
+						{ "name": "NR", "type": "integer" }
+						]
+				},
+				{ "name": "oc_bloc_ano", "properties": [
+						{ "name": "id", "type": "integer" },
+						{ "name": "date", "type": "datetime" },
+						{ "name": "palier", "type": "string" },
+						{ "name": "bloc", "type": "integer" },
+						{ "name": "criticite", "type": "integer" },
+						{ "name": "nb_fiches", "type": "integer" },
+						{ "name": "ouverte", "type": "integer" },
+						{ "name": "en_attente", "type": "integer" },
+						{ "name": "prise_en_compte", "type": "integer" },
+						{ "name": "corigee", "type": "integer" },
+						{ "name": "livree", "type": "integer" },
+						{ "name": "validee", "type": "integer" },
+						{ "name": "fermee", "type": "integer" },
+						{ "name": "demande_abandon", "type": "integer" },
+						{ "name": "fermee_abandonee", "type": "integer" },
+						{ "name": "a_completer", "type": "integer" },
+						{ "name": "total", "type": "integer" }
+						]
+				},
+				{ "name": "oc_anomalie", "properties": [
+						{ "name": "id", "type": "integer" },
+						{ "name": "date", "type": "datetime" },
+						{ "name": "creation", "type": "datetime" },
+						{ "name": "palier", "type": "string" },
+						{ "name": "bloc", "type": "integer" },
+						{ "name": "criticite", "type": "integer" },
+						{ "name": "num_qc", "type": "integer" },
+						{ "name": "num_pvcs", "type": "integer" },
+						{ "name": "statut", "type": "integer" },
+						{ "name": "ssa", "type": "integer" },
+						{ "name": "type", "type": "integer" },
+						{ "name": "nb_fiches", "type": "integer" },
+						{ "name": "nom", "type": "string" },
+						{ "name": "description", "type": "string" }
+						]
+				},
+				{ "name": "previsionnel", "properties": [
+						{ "name": "id", "type": "integer" },
+						{ "name": "palier", "type": "integer" },
+						{ "name": "date", "type": "datetime" },
+						{ "name": "prevrec", "type": "integer" },
+						{ "name": "faitrec", "type": "integer" },
+						{ "name": "prevpalier", "type": "integer" },
+						{ "name": "faitpalier", "type": "integer" },
+						{ "name": "prevp1p2", "type": "integer" },
+						{ "name": "faitp1p2", "type": "integer" },
+						{ "name": "prevp3", "type": "integer" },
+						{ "name": "faitp3", "type": "integer" }
+						]
+				},				
+				{ "name": "palier", "properties": [
+						{ "name": "id", "type": "integer" },
+						{ "name": "libelle", "type": "string" },
+						{ "name": "actif", "type": "integer" }
+						]
+				},
+				{ "name": "bloc", "properties": [
+						{ "name": "id", "type": "integer" },
+						{ "name": "libelle", "type": "string" }
+						]
+				},
+				{ "name": "phase", "properties": [
+						{ "name": "id", "type": "integer" },
+						{ "name": "libelle", "type": "string" }
+						]
+				},
+				{ "name": "priorite", "properties": [
+						{ "name": "id", "type": "integer" },
+						{ "name": "libelle", "type": "string" }
+						]
+				},
+				{ "name": "criticite", "properties": [
+						{ "name": "id", "type": "integer" },
+						{ "name": "libelle", "type": "string" }
+						]
+				},
+				{ "name": "type_rec", "properties": [
+						{ "name": "id", "type": "integer" },
+						{ "name": "libelle", "type": "string" }
+						]
+				},
+				{ "name": "nr_nf", "properties": [
+						{ "name": "id", "type": "integer" },
+						{ "name": "libelle", "type": "string" }
+						]
+				},
+				{ "name": "contrib", "properties": [
+						{ "name": "id", "type": "integer" },
+						{ "name": "libelle", "type": "string" }
+						]
+				},
+				{ "name": "projet", "properties": [
+						{ "name": "id", "type": "integer" },
+						{ "name": "libelle", "type": "string" }
+						]
+				},
+				{ "name": "ssa", "properties": [
+						{ "name": "id", "type": "integer" },
+						{ "name": "libelle", "type": "string" }
+						]
+				},
+				{ "name": "ano_statut", "properties": [
+						{ "name": "id", "type": "integer" },
+						{ "name": "cle", "type": "integer" },
+						{ "name": "libelle", "type": "string" }
+						]
+				},
+				{ "name": "lot", "properties": [
+						{ "name": "id", "type": "integer" },
+						{ "name": "libelle", "type": "string" }
+						]
+				},
+				{ "name": "cu", "properties": [
+						{ "name": "id", "type": "integer" },
+						{ "name": "libelle", "type": "string" }
+						]
+				}
+			]
+		}
+	}
+}

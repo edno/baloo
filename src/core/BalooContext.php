@@ -1,4 +1,5 @@
 <?php
+namespace Baloo;
 
 /**
  * class BalooContext
@@ -27,8 +28,9 @@ class BalooContext {
 	
 	public static $logger = null;
 
-	public function __construct($root) {
-		self::$rootDir = $root;
+	public function __construct($pdo) {
+		self::$pdo = $pdo;
+		self::$rootDir = __DIR__;
 		self::$logger = new BalooLogger();
 	}
 	

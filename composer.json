@@ -1,4 +1,11 @@
 {
+	"name": "baloo",
+    "autoload": {
+        "psr-4": {
+            "Baloo\\": "src/core/",
+			"Baloo\\Lib\\": "lib/"
+        }
+    },
     "require-dev": {
         "behat/behat": "~2.5"
     },

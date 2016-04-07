@@ -1,4 +1,5 @@
 <?php
+namespace Baloo;
 
 /**
  * class BalooPDO
@@ -6,7 +7,10 @@
  *
  * @package 
  */
-class BalooPDO extends PDO {
+
+use Baloo\BalooContext as BalooContext;
+ 
+class BalooPDO extends \PDO {
    
     private $engine;
     private $host;
@@ -21,8 +25,17 @@ class BalooPDO extends PDO {
         $this->user 	= $user;
         $this->pass 	= $pass;
 		
-        $dns = $this->engine .':dbname='. $this->database .';host='. $this->host;
-        parent::__construct($dns, $this->user, $this->pass);
+		switch($this->engine) {
+			case 'sqlite':
+				parent::__construct('sqlite:messaging.sqlite3');
+				break;
+			case 'sqlite-mem':
+				parent::__construct('sqlite::memory:');
+				break;				
+			default:
+				$dns = $this->engine .':dbname='. $this->database .';host='. $this->host;
+				parent::__construct($dns, $this->user, $this->pass);
+		}
     }
 	
 	public function prepare($query, $options = null) {

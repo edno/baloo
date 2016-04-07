@@ -1,4 +1,5 @@
 <?php
+namespace Baloo;
 
 /**
  * class DataSourceManager
@@ -10,6 +11,9 @@
 // @ TODO include ability to INSERT with IGNORE or UPDATE
 
 // @ TODO check that only one INSERT transaction is used if several VALUES for the same TABLE
+
+use Baloo\BalooContext as BalooContext;
+use Baloo\BalooModel as BalooModel;
 
 class DataSourceManager {
 

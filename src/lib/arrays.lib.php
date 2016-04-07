@@ -1,4 +1,5 @@
 <?php
+namespace Baloo\Lib;
 
 function array_diff_assoc_recursive($array1, $array2) {
     $difference = array();

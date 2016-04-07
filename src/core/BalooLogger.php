@@ -1,5 +1,5 @@
 <?php
-
+namespace Baloo;
 /**
  * class BalooLogger
  * Class that provide event logging features for Baloo

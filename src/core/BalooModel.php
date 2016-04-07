@@ -1,4 +1,5 @@
 <?php
+namespace Baloo;
 
 /**
  * class BalooModel
@@ -6,6 +7,9 @@
  *
  * @package baloo
  */
+
+use Baloo\BalooException as BalooException;
+ 
 final class BalooModel {
 
 	private static $table = array(
