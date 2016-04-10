@@ -19,12 +19,12 @@ class Package {
 
   public function __construct(string $name, string $datasourcetype, string $datasource) {
     if( (is_null($name) || is_null($datasourcetype) || is_null($datasource)) === false ) {
-  		$this->name = $name;
+      $this->name = $name;
       $this->datasourcetype->name = $datasourcetype;
       $this->datasource->name = $datasource;
     } else {
       throw new PackManException("Invalid Constructor Arguments", 0);
     }
-	}
+  }
 
 }

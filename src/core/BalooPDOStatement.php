@@ -2,10 +2,8 @@
 
 /**
  * class BalooPDOStatement
- * Class that extend PDOStatement class
- *
- * @package baloo
+ * Class that extend PDOStatement class.
  */
-class BalooPDOStatement extends PDOStatement {
-
+class BalooPDOStatement extends PDOStatement
+{
 }
