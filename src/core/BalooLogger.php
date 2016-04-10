@@ -8,8 +8,8 @@ namespace Baloo;
  */
 
 class BalooLogger {
-	
+
 	public function __construct() {
-		
+
 	}
 }

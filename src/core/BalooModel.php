@@ -8,8 +8,8 @@ namespace Baloo;
  * @package baloo
  */
 
-use Baloo\BalooException as BalooException;
- 
+use Baloo\BalooException;
+
 final class BalooModel {
 
 	private static $table = array(
@@ -20,9 +20,9 @@ final class BalooModel {
 		'entityfieldtype'	=> 'entityfieldtype',
 		'entityobject'		=> 'dataobject',
 		'entityobjectvalue'	=> 'datavalue',
-		
+
 	);
-	
+
 	// Make magic method as protected
 	protected function __construct(){}
 	protected function __clone(){}
@@ -32,7 +32,7 @@ final class BalooModel {
 	public static function __callStatic($name, $arg) {
 		$matches = array();
 		if(preg_match('/^([a-z]+)([A-Z]+[A-z_]*)$/', $name, $matches) !== 1) {
-			throw new BalooException('Invalid static call "'.$name.'" in '.get_class($this));			
+			throw new BalooException('Invalid static call "'.$name.'" in '.get_class($this));
 		}
 		$var = $matches[1];
 		if(isset($matches[2])) {

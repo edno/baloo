@@ -1,13 +1,30 @@
 {
-	"name": "baloo",
+		"name": "baloo",
+		"description": "Basic Abstraction Layer Object Oriented for PHP",
+		"licence": "Apache-2.0",
+		"keywords": ["pdo","database","abstraction"],
+		"authors": [
+        {
+            "name": "Greg Heitz",
+            "email": "edno_gh@yahoo.fr",
+            "role": "Developer"
+        }
+		],
     "autoload": {
         "psr-4": {
             "Baloo\\": "src/core/",
-			"Baloo\\Lib\\": "lib/"
+						"Baloo\\PackMan\\": "src/core/",
+						"Baloo\\Lib\\": "lib/"
         }
     },
+    "require": {
+       "php": ">=7.0",
+			 "ext-pdo": "*",
+       "monolog/monolog": "~1.0"
+    },
     "require-dev": {
-        "behat/behat": "~2.5"
+        "behat/behat": "~2.5",
+        "phpunit/phpunit": "~5.3"
     },
     "config": {
         "bin-dir": "bin/"

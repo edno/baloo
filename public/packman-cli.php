@@ -3,24 +3,24 @@ define('ISCLI', PHP_SAPI === 'cli');
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Baloo\PackMan\PackMan as PackMan;
-use Baloo\BalooContext as BalooContext;
-use Baloo\BalooPDO as BalooPDO;
+use Baloo\PackMan\PackMan;
+use Baloo\BalooContext;
+use Baloo\BalooPDO;
 
 if(ISCLI === true) {
 
 	try {
-		new BalooContext(new BalooPDO(null, null, null, null, 'sqlite-mem'));
-	
-		echo PHP_EOL . PHP_EOL;	
+		new BalooContext(new BalooPDO(null, null, null, null, 'memory'));
+
+		echo PHP_EOL . PHP_EOL;
 		echo '-------'. PackMan::NAME .'-------' . PHP_EOL;
 		echo PHP_EOL . PHP_EOL;
 		echo '> Package to install? ';
 		$file = PackMan::readConsole();
-		
+
 		echo 'INFO: Loading "'. $file .'"...'. PHP_EOL;
 		$pack = PackMan::loadPackFile($file);
-		
+
 		echo 'INFO: Installing "'. $file .'"...'. PHP_EOL;
 		try {
 			$status = PackMan::installPack($pack);
@@ -40,13 +40,13 @@ if(ISCLI === true) {
 				throw $e;
 			}
 		}
-		
+
 		if($status === true) {
 			echo 'INFO: Installation of package "'. $file .'" finished.'. PHP_EOL;
 		}
 		else {
 			throw new PackManException('Installation of package "'. $file .'" failed!!!');
-		}			
+		}
 	}
 	catch(Exception $e) {
 		echo 'ERROR: '. $e->getMessage() . PHP_EOL;
