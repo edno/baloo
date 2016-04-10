@@ -121,7 +121,7 @@ class DataSourceManager {
 	static public function insertDataTypeField($type, $name, $typefield = 0, $custom = 0) {
 		$typefield = DataEntityType::getTypePropertyId($typefield);
 		$query = BalooContext::$pdo->prepare("
-			INSERT INTO ". BalooModel::tableEntityField() ." (name, custom, ". BalooModel::tableEntityType() ."_id, ". BalooModel::tableEntityFieldType() ."_id)
+			INSERT INTO ". BalooModel::tableEntityField() ." (name, custom, ". BalooModel::tableEntityType() ."_id, ". BalooModel::tableEntityFieldInfo() ."_id)
 			VALUES (:name, :custom, :entitytype_id, :entityfieldtype_id)
 			");
 		return $query->execute(array(':name' => $name, ':custom' => (bool)$custom, ':entitytype_id' => (integer)$type, 'entityfieldtype_id' => (integer)$typefield));
@@ -129,12 +129,10 @@ class DataSourceManager {
 
 	static public function insertDataTypeFieldType($name, $format = null) {
 		$query = BalooContext::$pdo->prepare("
-			INSERT INTO ". BalooModel::tableEntityFieldType() ." (name, format)
+			INSERT INTO ". BalooModel::tableEntityFieldInfo() ." (name, format)
 			VALUES (:name, :format)
 			");
 		return $query->execute(array(':name' => $name, ':format' => $format));
 	}
 
 }
-
-?>

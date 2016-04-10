@@ -13,14 +13,15 @@ use Baloo\BalooException;
 final class BalooModel {
 
 	private static $table = array(
-        'datasource' 		=> 'datasource',
-		'datasourcetype' 	=> 'datasourcetype',
-		'entitytype' 		=> 'entitytype',
-		'entityfield'		=> 'entityfield',
-		'entityfieldtype'	=> 'entityfieldtype',
-		'entityobject'		=> 'dataobject',
+    'datasource' 		    => 'datasource',
+		'datasourcetype' 	  => 'datasourcetype',
+		'entitytype' 		    => 'entitytype',
+		'entityfield'		    => 'entityfield',
+		'entityfieldinfo'	  => 'entityfieldtype',
+		'entityobject'		  => 'dataobject',
 		'entityobjectvalue'	=> 'datavalue',
-
+		'entityobjectblob'	=> 'datablob',
+		'entityobjectfile'	=> 'datafile'
 	);
 
 	// Make magic method as protected
@@ -32,7 +33,7 @@ final class BalooModel {
 	public static function __callStatic($name, $arg) {
 		$matches = array();
 		if(preg_match('/^([a-z]+)([A-Z]+[A-z_]*)$/', $name, $matches) !== 1) {
-			throw new BalooException('Invalid static call "'.$name.'" in '.get_class($this));
+			throw new BalooException('Invalid Static Call "'.$name.'" in '.get_class($this));
 		}
 		$var = $matches[1];
 		if(isset($matches[2])) {
@@ -41,5 +42,5 @@ final class BalooModel {
 		} else {
 			return static::${$var};
 		}
-    }
+  }
 }

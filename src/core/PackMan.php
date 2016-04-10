@@ -5,9 +5,10 @@ namespace Baloo\PackMan;
  * class PackMan
  * Class that manages datasource packages
  *
- * @package PackageManager
+ * @package PackMan
  */
 
+use Baloo\PackMan\Package;
 use Baloo\PackMan\PackManException;
 
 use Baloo\DataSourceManager;
@@ -54,7 +55,7 @@ class PackMan {
 			}
 			$objPack = json_decode($jsonPack);
 
-			return $objPack->pack;
+			return (Package)$objPack->pack;
 		}
 		catch(Exception $e) {
 			throw $e;
@@ -184,4 +185,3 @@ class PackMan {
 	}
 
 }
-?>

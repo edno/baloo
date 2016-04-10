@@ -20,7 +20,7 @@ class DataSource {
 	 */
 	private function __construct() {
 		$this->id = intval($this->id); // force id as integer
-    }
+  }
 
 	public function __toString() {
 		return $this->getName();
