@@ -1,6 +1,6 @@
 <?php
 
-namespace Baloo\Lib;
+namespace Baloo\Lib\Arrays;
 
 function array_diff_assoc_recursive($array1, $array2)
 {

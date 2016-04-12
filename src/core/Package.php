@@ -10,6 +10,7 @@ namespace Baloo\Packman;
  */
 
 use Baloo\Packman\PackmanException;
+
 \Baloo\BalooContext::loadLibrary('json'); // workaround for non-class namespace
 use Baloo\Lib\Json;
 
@@ -38,9 +39,13 @@ class Package {
     try {
       if(Json\json_valid($jsonString)) {
           $pack = json_decode($jsonString);
-          $this->name = $pack->name;
-          $this->datasourcetype = $pack->datasourcetype;
-          $this->datasource = $pack->datasource;
+          if( (isset($pack->name) && isset($pack->datasourcetype) && isset($pack->datasource)) === true ) {
+              $this->name = $pack->name;
+              $this->datasourcetype = $pack->datasourcetype;
+              $this->datasource = $pack->datasource;
+          } else {
+          throw new PackmanException("Invalid JSON Package", 0);
+        } 
       } 
     } catch(\Exception $e) {
         throw new PackmanException($e->getMessage());
@@ -48,16 +53,20 @@ class Package {
   }
   
   private function __constructDefault(string $name, string $datasourcetype, string $datasource) {
-    if( (is_null($name) || is_null($datasourcetype) || is_null($datasource)) === false ) {
-      $this->name = $name;
-      $this->datasourcetype = (object) [
-        'name' => $datasourcetype
-      ];
-      $this->datasource = (object) [
-        'name' => $datasource
-      ];
-    } else {
-      throw new PackmanException("Invalid Constructor Arguments", 0);
-    }  
+    try {
+        if( (is_null($name) || is_null($datasourcetype) || is_null($datasource)) === false ) {
+          $this->name = $name;
+          $this->datasourcetype = (object) [
+            'name' => $datasourcetype
+          ];
+          $this->datasource = (object) [
+            'name' => $datasource
+          ];
+        } else {
+          throw new PackmanException("Invalid Constructor Arguments", 0);
+        }  
+    } catch(\Exception $e) {
+        throw $e;
+    }
   }
 }

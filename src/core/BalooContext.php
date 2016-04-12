@@ -14,20 +14,19 @@ class BalooContext
     public static $debug = false;
 
     private static $folders = array(
-        'lib' => 'src/lib/',
-        'core' => 'src/core/',
+        'lib' => '../lib',
+        'core' => '../core',
     );
 
     public static $pdo = null;
     public static $tablePrefix = '_';
-    public static $rootDir = null;
+    public static $rootDir = __DIR__;
 
     public static $logger = null;
 
     public function __construct($pdo)
     {
         self::$pdo = $pdo;
-        self::$rootDir = __DIR__;
         self::$logger = new BalooLogger();
     }
 

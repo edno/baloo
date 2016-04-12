@@ -15,6 +15,9 @@ use Baloo\DataSourceManager;
 use Baloo\BalooContext;
 use Baloo\DataEntityType;
 
+BalooContext::loadLibrary('arrays'); // workaround for non-class namespace
+use Baloo\Lib\Arrays;
+
 class Packman {
 
   const NAME = 'BALOO PACKage MANager';
@@ -25,23 +28,19 @@ class Packman {
 
   private static $packPath = __DIR__.'/../../public/packs/';  
   
-  public function __construct() {
+  private function __construct() {
     //nothing
-  }
-
-  static public function readConsole() {
-    return trim(fgets(STDIN));
   }
 
   static public function listPackFile($bNotInstalledOnly = false) {
     // list package available or installed
   }
 
-  static public function isPackInstalled($strPack) {
+  static public function isPackInstalled(string $strPack) {
     // check if the pack is already installed
   }
 
-  static public function loadPackFile($strPack) {
+  static public function loadPackFile(string $strPack) {
     try {
       $packfile = self::_getPackFile($strPack);
       $ext = pathinfo($packfile, PATHINFO_EXTENSION);
@@ -64,7 +63,7 @@ class Packman {
     }
   }
 
-  static private function _getPackFile($strPack) {
+  static private function _getPackFile(string $strPack) {
     if(is_readable(self::$packPath.$strPack.self::JSON_EXT)) {
       return self::$packPath.$strPack.self::JSON_EXT;
     }
@@ -72,11 +71,11 @@ class Packman {
       return self::$packPath.$strPack.self::GZIP_EXT;
     }
     else {
-      throw new PackManException('Package "'. $strPack .'" not found in directory "'. self::$packPath .'"');
+      throw new PackManException('Package "'. $strPack .'" not accessible in directory "'. self::$packPath .'"');
     }
   }
 
-  static public function installPack($pack, $name = null) {
+  static public function installPack(Package $pack, string $name = null) {
     $result = false;
 
     try {
@@ -101,11 +100,11 @@ class Packman {
     return (bool)$result;
   }
 
-  static public function dumpPack($name) {
+  static public function dumpPack(string $name) {
     //todo
   }
 
-  static public function removePack($pack, $removeDSType = true) {
+  static public function removePack(object $pack, $removeDSType = true) {
     $result = false;
     if(is_null($pack) === false) {
       if(DataSourceManager::getDataSource($pack->datasource->name) === false) {
@@ -127,7 +126,7 @@ class Packman {
     return (bool)$result;
   }
 
-  static private function _createDataSourceFromPack($datasource) {
+  static private function _createDataSourceFromPack(object $datasource) {
     if(is_object($datasource)) {
       $dsID = DataSourceManager::insertDataSource($datasource->name, $datasource->version, $datasource->type);
     }
@@ -160,8 +159,6 @@ class Packman {
   }
 
   static private function _listPackPropertyTypes($entities) {
-    BalooContext::loadLibrary('arrays', 'lib'); // import extended arrays functions
-
     $list = array();
     // get complete list of properties
     foreach($entities as $type) {
@@ -175,13 +172,13 @@ class Packman {
     }
 
     // reduce properties list
-    $list = array_unique_recursive($list);
+    $list = Arrays\array_unique_recursive($list);
 
     // avoid duplicate entries of type
     $existingTypes = DataEntityType::getPropertyTypesList();
     array_walk($existingTypes, function(&$item, $key) { array_shift($item); $item = array_values($item); }); // remove 'id' entry
 
-    $list = array_diff_recursive($list, $existingTypes);
+    $list = Arrays\array_diff_recursive($list, $existingTypes);
 
     return $list;
   }
