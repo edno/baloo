@@ -10,6 +10,9 @@ abstract class DatabaseTestCase extends \PHPUnit_Extensions_Database_TestCase
     // only instantiate PHPUnit_Extensions_Database_DB_IDatabaseConnection once per test
     private $conn = null;   
 
+	/**
+	 * @return PHPUnit_Extensions_Database_DB_IDatabaseConnection
+	 */
     final public function getConnection()
     {
         if ($this->conn === null) {
@@ -19,7 +22,7 @@ abstract class DatabaseTestCase extends \PHPUnit_Extensions_Database_TestCase
             $this->conn = $this->createDefaultDBConnection(self::$pdo, $GLOBALS['DB_DBNAME']);  
         
             self::initDatabase();
-        }
+        }	
 
         return $this->conn;
     }
