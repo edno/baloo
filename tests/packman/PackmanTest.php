@@ -2,7 +2,7 @@
 
 use Baloo\Packman\Packman;
 
-class PackmanTest extends \Baloo\UnitTest\DataBaseTestCase
+class PackmanTest extends \Baloo\UnitTest\DatabaseTestCase
 {  
     const CLASS_PACKMAN = 'Baloo\Packman\Packman';
     const TEST_PACKS_LOCATION = __DIR__.'/_packs/';

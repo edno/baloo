@@ -2,7 +2,7 @@
 
 namespace Baloo\UnitTest;
 
-abstract class DataBaseTestCase extends \PHPUnit_Extensions_Database_TestCase
+abstract class DatabaseTestCase extends \PHPUnit_Extensions_Database_TestCase
 {  
     // only instantiate pdo once for test clean-up/fixture load
     static private $pdo = null;
@@ -46,9 +46,7 @@ abstract class DataBaseTestCase extends \PHPUnit_Extensions_Database_TestCase
      * Use reflection for setting private properties
      */
     final protected static function setPrivateProperty(string $class, string $property, $value) {
-        $reflectedProperty = new \ReflectionProperty($class, $property);
-        $reflectedProperty->setAccessible(true);
-        $reflectedProperty->setValue($value);
+        TestCase::setPrivateProperty($class, $property, $value);
     }
     
     /**
@@ -56,10 +54,8 @@ abstract class DataBaseTestCase extends \PHPUnit_Extensions_Database_TestCase
      * @return method result
      */
     final protected static function invokePrivateMethod(string $class, string $method, ...$params) {
-        $reflectedMethod = new \ReflectionMethod($class, $method);
-        $reflectedMethod->setAccessible(true);
-        $class = $reflectedMethod->isStatic() ? null : $class;
-        return $reflectedMethod->invokeArgs($class, $params);
+		array_unshift($params, $class, $method);
+		return call_user_func_array(__NAMESPACE__.'\TestCase::invokePrivateMethod', $params);
     }
     
 }
