@@ -4,8 +4,7 @@ namespace Baloo\Lib\Json;
 /**
  * @source: https://stackoverflow.com/questions/6041741/fastest-way-to-check-if-a-string-is-json-in-php/15198925#15198925
 **/
-function json_valid(string $strJson)
-{
+function json_valid(string $strJson) {
     // decode the JSON data
     $result = json_decode($strJson);
 

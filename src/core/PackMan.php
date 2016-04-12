@@ -54,8 +54,8 @@ class Packman {
         $jsonPack = file_get_contents($packfile);
       }
 
-	  $pack = new Package($jsonPack);
-	  
+      $pack = new Package($jsonPack);
+      
       return $pack;
     }
     catch(Exception $e) {
