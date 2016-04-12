@@ -15,7 +15,8 @@
             "Baloo\\": "src/core/",
             "Baloo\\Packman\\": "src/core/",
             "Baloo\\Lib\\": "src/lib/",
-			"Baloo\\Modules\\": "src/modules/"
+			"Baloo\\Modules\\": "src/modules/",
+			"Baloo\\UnitTest\\": "tests/framework/"
         }
     },
     "require": {

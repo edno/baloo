@@ -2,44 +2,29 @@
 
 use Baloo\Packman\Packman;
 
-class PackmanTest extends \PHPUnit_Framework_TestCase
+class PackmanTest extends \Baloo\UnitTest\DataBaseTestCase
 {  
     const CLASS_PACKMAN = 'Baloo\Packman\Packman';
-    const TEST_PACKS_LOCATION = __DIR__.'/packs/';
+    const TEST_PACKS_LOCATION = __DIR__.'/_packs/';
     
-    static private $methodGetPackFile;
-
     public static function setUpBeforeClass() {
         // hack the default pack location for testing purpose
-        self::setPrivateProperty('packPath', self::TEST_PACKS_LOCATION);
+        self::setPrivateProperty(self::CLASS_PACKMAN, 'packPath', self::TEST_PACKS_LOCATION);
     }
 
     /**
-     * Use reflection for setting private properties
+     * @return PHPUnit_Extensions_Database_DataSet_IDataSet
      */
-    private static function setPrivateProperty(string $property, $value) {
-        $reflectedProperty = new ReflectionProperty(self::CLASS_PACKMAN, $property);
-        $reflectedProperty->setAccessible(true);
-        $reflectedProperty->setValue($value);
-    }
-    
-    /**
-     * Use reflection for accessing private methods
-     */
-    private static function invokePrivateMethod(string $method, ...$params) {
-        $reflectedMethod = new ReflectionMethod(self::CLASS_PACKMAN, $method);
-        $reflectedMethod->setAccessible(true);
-        $class = $reflectedMethod->isStatic() ? null : self::CLASS_PACKMAN;
-        return $reflectedMethod->invokeArgs($class, $params);
-    }
+    public function getDataSet() {
+        return $this->createFlatXMLDataSet(__DIR__.'/../_data/ds_empty.xml');
+    }   
     
     /**
      * @covers Baloo\Packman\Packman::_getPackFile
      * @group private
      */     
     public function testGetPackFileJSON() {
-        //$result = self::accessPrivateMethod('_getPackFile')->invoke(null, 'pack4test');
-        $result = self::invokePrivateMethod('_getPackFile', 'pack4test');
+        $result = self::invokePrivateMethod(self::CLASS_PACKMAN, '_getPackFile', 'pack4test');
         $this->assertEquals(self::TEST_PACKS_LOCATION.'pack4test.pack.json', $result);
     }
     
@@ -48,7 +33,7 @@ class PackmanTest extends \PHPUnit_Framework_TestCase
      * @group private
      */     
     public function testGetPackFileGZIP() {
-        $result = self::invokePrivateMethod('_getPackFile', 'pack4test_gz');
+        $result = self::invokePrivateMethod(self::CLASS_PACKMAN, '_getPackFile', 'pack4test_gz');
         $this->assertEquals(self::TEST_PACKS_LOCATION.'pack4test_gz.pack.json.gz', $result);    
     }
     
@@ -58,7 +43,7 @@ class PackmanTest extends \PHPUnit_Framework_TestCase
      * @group private
      */     
     public function testGetPackFileNotPresent() {
-        $result = self::invokePrivateMethod('_getPackFile', 'nofile');
+        $result = self::invokePrivateMethod(self::CLASS_PACKMAN, '_getPackFile', 'nofile');
     }
     
     /**
@@ -84,7 +69,7 @@ class PackmanTest extends \PHPUnit_Framework_TestCase
      * @covers Baloo\Packman\Packman::loadPackFile
      * @group public
      */     
-    public function testLoadPackFileGZJSON() {
+    public function testLoadPackFileGZIP() {
         $pack = Packman::loadPackFile('pack4test_gz');
         $this->assertJsonStringEqualsJsonFile(self::TEST_PACKS_LOCATION.'pack4test.pack.json', json_encode($pack));
         $this->assertInstanceOf('Baloo\Packman\Package', $pack);

@@ -8,8 +8,16 @@
          convertWarningsToExceptions="true"
          processIsolation="false"
          stopOnFailure="false"
-         syntaxCheck="false"
->
+         syntaxCheck="true">
+         
+    <php>
+        <var name="DB_SQL" value="db_sqlite.sql" />
+        <var name="DB_DSN" value="sqlite::memory:" />
+        <var name="DB_USER" />
+        <var name="DB_PASSWD" />
+        <var name="DB_DBNAME" />
+    </php>
+    
     <testsuites>
         <testsuite name="BALOO Test Suite">
             <directory>./tests/</directory>
@@ -18,4 +26,5 @@
             <directory>./tests/packman</directory>
         </testsuite>
     </testsuites>
+    
 </phpunit>
