@@ -19,11 +19,12 @@ class Packman {
 
   const NAME = 'BALOO PACKage MANager';
   const VERSION = '0.20160410';
-  const PATH = __DIR__.'/../../public/packs/';
 
   const JSON_EXT = '.pack.json';
   const GZIP_EXT = '.pack.json.gz';
 
+  private static $packPath = __DIR__.'/../../public/packs/';  
+  
   public function __construct() {
     //nothing
   }
@@ -64,14 +65,14 @@ class Packman {
   }
 
   static private function _getPackFile($strPack) {
-    if(is_readable(Packman::PATH.$strPack.Packman::JSON_EXT)) {
-      return Packman::PATH.$strPack.Packman::JSON_EXT;
+    if(is_readable(self::$packPath.$strPack.self::JSON_EXT)) {
+      return self::$packPath.$strPack.self::JSON_EXT;
     }
-    elseif(is_readable(Packman::PATH.$strPack.Packman::GZIP_EXT)) {
-      return Packman::PATH.$strPack.Packman::GZIP_EXT;
+    elseif(is_readable(self::$packPath.$strPack.self::GZIP_EXT)) {
+      return self::$packPath.$strPack.self::GZIP_EXT;
     }
     else {
-      throw new PackManException('Package "'. $strPack .'" not found in directory "'. Packman::PATH .'"');
+      throw new PackManException('Package "'. $strPack .'" not found in directory "'. self::$packPath .'"');
     }
   }
 
