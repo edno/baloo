@@ -6,18 +6,16 @@ namespace Baloo;
  * class BalooContext
  * Class that manages global BALOO execution context (mandatory).
  */
+ 
+use Baloo\BalooException;
+ 
 class BalooContext
 {
     public static $debug = false;
 
     private static $folders = array(
-        'lib' => 'lib/',
-        'core' => 'core/',
-    );
-
-    private static $ext = array(
-        'lib' => '.lib.php',
-        'core' => '.class.php',
+        'lib' => 'src/lib/',
+        'core' => 'src/core/',
     );
 
     public static $pdo = null;
@@ -39,11 +37,11 @@ class BalooContext
      * @static
      *
      * @param string $lib    Name (without suffix) of the library to be loaded, if null load all libraries found in specified folder (default=null)
-     * @param string $folder Folder that contains librairies (default='lib')
+     * @param string $folder Folder that contains libraries (default='lib')
      *
      * @return bool
      */
-    public static function loadLibrary($lib = null, $folder = 'core')
+    public static function loadLibrary($lib = null, $folder = 'lib')
     {
         try {
             $path = self::folder($folder);
@@ -55,14 +53,12 @@ class BalooContext
                 $d->close();
                 unset($d);
             } else {
-                require_once $path.'/'.$lib.self::folderExt($folder);
+                require_once $path.'/'.$lib.'.php';
             }
 
             return true;
-        } catch (Exception $e) {
-            echo 'ERROR: Failed to open library '.$lib.' in  folder '.$folder.'!'.PHP_EOL;
-
-            return false;
+        } catch(\Exception $e) {
+            throw new BalooException('ERROR: Failed to open library '.$lib.' in  folder '.$folder.'!');
         }
     }
 
@@ -89,20 +85,6 @@ class BalooContext
      */
     public static function getFolders()
     {
-        return array_map(function ($folder) { return BalooContext::$rootDir.'/'.$folder; }, self::$folders);
-    }
-
-    /**
-     * Get folder's class file extension.
-     *
-     * @static
-     *
-     * @param string $key Folder's name to retreive path
-     *
-     * @return string Class file extension
-     */
-    public static function folderExt($key)
-    {
-        return static::$ext[$key];
+        return array_map(function ($folder) { return static::$rootDir.'/'.$folder; }, self::$folders);
     }
 }

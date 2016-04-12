@@ -1,12 +1,12 @@
 <?php
 
-namespace Baloo\PackMan;
+namespace Baloo\Packman;
 
 /**
- * class PackManException
- * Class that manages PackMan exceptions.
+ * class PackmanException
+ * Class that manages Packman exceptions.
  */
-class PackManException  extends \Exception
+class PackmanException  extends \Exception
 {
     public function __construct($message = '', $code = 0, $previous = null)
     {

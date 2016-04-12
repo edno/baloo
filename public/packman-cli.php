@@ -2,9 +2,9 @@
 
 define('ISCLI', PHP_SAPI === 'cli');
 
-require __DIR__.'/../vendor/autoload.php';
+require_once __DIR__.'/../vendor/autoload.php';
 
-use Baloo\PackMan\PackMan;
+use Baloo\Packman\Packman;
 use Baloo\BalooContext;
 use Baloo\BalooPDO;
 
@@ -13,26 +13,26 @@ if (ISCLI === true) {
         new BalooContext(new BalooPDO(null, null, null, null, 'memory'));
 
         echo PHP_EOL.PHP_EOL;
-        echo '-------'.PackMan::NAME.'-------'.PHP_EOL;
+        echo '-------'.Packman::NAME.'-------'.PHP_EOL;
         echo PHP_EOL.PHP_EOL;
         echo '> Package to install? ';
-        $file = PackMan::readConsole();
+        $file = Packman::readConsole();
 
         echo 'INFO: Loading "'.$file.'"...'.PHP_EOL;
-        $pack = PackMan::loadPackFile($file);
+        $pack = Packman::loadPackFile($file);
 
         echo 'INFO: Installing "'.$file.'"...'.PHP_EOL;
         try {
-            $status = PackMan::installPack($pack);
+            $status = Packman::installPack($pack);
         } catch (Exception $e) {
             $status = false;
             if ($e->getCode() == 100 || $e->getCode() == 101) {
                 echo 'INFO: '.$e->getMessage().PHP_EOL.PHP_EOL;
                 echo '> Overwrite current "'.$file.'" package (y|n)? ';
-                $response = PackMan::readConsole();
+                $response = Packman::readConsole();
                 if (preg_match('/y/i', $response)) {
-                    PackMan::removePack($pack);
-                    $status = PackMan::installPack($pack);
+                    Packman::removePack($pack);
+                    $status = Packman::installPack($pack);
                 }
             } else {
                 throw $e;

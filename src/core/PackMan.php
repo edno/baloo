@@ -1,21 +1,21 @@
 <?php
-namespace Baloo\PackMan;
+namespace Baloo\Packman;
 
 /**
- * class PackMan
+ * class Packman
  * Class that manages datasource packages
  *
- * @package PackMan
+ * @package Packman
  */
 
-use Baloo\PackMan\Package;
-use Baloo\PackMan\PackManException;
+use Baloo\Packman\Package;
+use Baloo\Packman\PackManException;
 
 use Baloo\DataSourceManager;
 use Baloo\BalooContext;
 use Baloo\DataEntityType;
 
-class PackMan {
+class Packman {
 
   const NAME = 'BALOO PACKage MANager';
   const VERSION = '0.20160410';
@@ -32,8 +32,8 @@ class PackMan {
     return trim(fgets(STDIN));
   }
 
-  static public function listPackFile($bAvailable = false) {
-    // list package available and installed
+  static public function listPackFile($bNotInstalledOnly = false) {
+    // list package available or installed
   }
 
   static public function isPackInstalled($strPack) {
@@ -53,9 +53,10 @@ class PackMan {
       else {
         $jsonPack = file_get_contents($packfile);
       }
-      $objPack = json_decode($jsonPack);
 
-      return (Package)$objPack->pack;
+	  $pack = new Package($jsonPack);
+	  
+      return $pack;
     }
     catch(Exception $e) {
       throw $e;
@@ -63,14 +64,14 @@ class PackMan {
   }
 
   static private function _getPackFile($strPack) {
-    if(is_readable(PackMan::PATH.$strPack.PackMan::JSON_EXT)) {
-      return PackMan::PATH.$strPack.PackMan::JSON_EXT;
+    if(is_readable(Packman::PATH.$strPack.Packman::JSON_EXT)) {
+      return Packman::PATH.$strPack.Packman::JSON_EXT;
     }
-    elseif(is_readable(PackMan::PATH.$strPack.PackMan::GZIP_EXT)) {
-      return PackMan::PATH.$strPack.PackMan::GZIP_EXT;
+    elseif(is_readable(Packman::PATH.$strPack.Packman::GZIP_EXT)) {
+      return Packman::PATH.$strPack.Packman::GZIP_EXT;
     }
     else {
-      throw new PackManException('Package "'. $strPack .'" not found in directory "'. PackMan::PATH .'"');
+      throw new PackManException('Package "'. $strPack .'" not found in directory "'. Packman::PATH .'"');
     }
   }
 
