@@ -4,15 +4,15 @@ use Baloo\Packman\Packman;
 
 class PackmanTest extends \PHPUnit_Framework_TestCase
 {  
-	const TEST_PACKS_LOCATION = __DIR__.'/packs/';
+    const TEST_PACKS_LOCATION = __DIR__.'/packs/';
 
-	public static function setUpBeforeClass() {
-		// hack the default pack location for testing purpose
-		$reflectedClass = new \ReflectionClass('Baloo\Packman\Packman');
-		$reflectedProperty = $reflectedClass->getProperty('packPath');
-		$reflectedProperty->setAccessible(true);
-		$reflectedProperty->setValue(self::TEST_PACKS_LOCATION);
-	}
+    public static function setUpBeforeClass() {
+        // hack the default pack location for testing purpose
+        $reflectedClass = new \ReflectionClass('Baloo\Packman\Packman');
+        $reflectedProperty = $reflectedClass->getProperty('packPath');
+        $reflectedProperty->setAccessible(true);
+        $reflectedProperty->setValue(self::TEST_PACKS_LOCATION);
+    }
 
     /**
      * @covers Baloo\Packman\Packman::loadPackFile
