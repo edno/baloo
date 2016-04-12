@@ -11,7 +11,8 @@ class PackmanTest extends \Baloo\UnitTest\DatabaseTestCase
     const TEST_DATA = __DIR__.'/../_data/';
 
     public function setUp() {
-        new \Baloo\BalooContext(self::getPDO());
+        $pdo = $this->getConnection()->getConnection();
+        new \Baloo\BalooContext($pdo);
         // hack the default pack location for testing purpose
         self::setPrivateProperty(self::TEST_CLASS, 'packPath', self::TEST_PACKS);
     }
@@ -27,7 +28,7 @@ class PackmanTest extends \Baloo\UnitTest\DatabaseTestCase
      * @covers Baloo\Packman\Packman::_getPackFile
      * @group private
      */
-    public function testGetPackFileJSON() {
+    public function testGetPackFileJson() {
         $package = 'pack4test';
         $result = self::invokePrivateMethod(self::TEST_CLASS, '_getPackFile', $package);
         $this->assertEquals(self::TEST_PACKS."${package}.pack.json", $result);
@@ -37,7 +38,7 @@ class PackmanTest extends \Baloo\UnitTest\DatabaseTestCase
      * @covers Baloo\Packman\Packman::_getPackFile
      * @group private
      */
-    public function testGetPackFileGZIP() {
+    public function testGetPackFileGzip() {
         $package = 'pack4test';
         $result = self::invokePrivateMethod(self::TEST_CLASS, '_getPackFile', "${package}_gz");
         $this->assertEquals(self::TEST_PACKS."${package}_gz.pack.json.gz", $result);
@@ -70,7 +71,7 @@ class PackmanTest extends \Baloo\UnitTest\DatabaseTestCase
      * @covers Baloo\Packman\Packman::loadPackFile
      * @group public
      */
-    public function testLoadPackFileJSON() {
+    public function testLoadPackFileJson() {
         $package = 'pack4test';
         $pack = Packman::loadPackFile($package);
         $this->assertJsonStringEqualsJsonFile(self::TEST_PACKS."${package}.pack.json", json_encode($pack));
@@ -81,7 +82,7 @@ class PackmanTest extends \Baloo\UnitTest\DatabaseTestCase
      * @covers Baloo\Packman\Packman::loadPackFile
      * @group public
      */
-    public function testLoadPackFileGZIP() {
+    public function testLoadPackFileGzip() {
         $package = 'pack4test';
         $pack = Packman::loadPackFile("${package}_gz");
         $this->assertJsonStringEqualsJsonFile(self::TEST_PACKS."${package}.pack.json", json_encode($pack));

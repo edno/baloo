@@ -61,8 +61,4 @@ abstract class DatabaseTestCase extends \PHPUnit_Extensions_Database_TestCase
         return call_user_func_array(__NAMESPACE__.'\TestCase::invokePrivateMethod', $params);
     }
 
-    final static protected function getPDO() {
-      return self::$pdo;
-    }
-
 }
