@@ -54,8 +54,8 @@ abstract class DatabaseTestCase extends \PHPUnit_Extensions_Database_TestCase
      * @return method result
      */
     final protected static function invokePrivateMethod(string $class, string $method, ...$params) {
-		array_unshift($params, $class, $method);
-		return call_user_func_array(__NAMESPACE__.'\TestCase::invokePrivateMethod', $params);
+        array_unshift($params, $class, $method);
+        return call_user_func_array(__NAMESPACE__.'\TestCase::invokePrivateMethod', $params);
     }
     
 }
