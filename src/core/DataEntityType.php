@@ -104,7 +104,7 @@ class DataEntityType
         );
         $query->execute();
 
-        return $query->fetchAll(PDO::FETCH_ASSOC);
+        return $query->fetchAll(\PDO::FETCH_ASSOC);
     }
 
     public static function getTypePropertyId($name)
@@ -134,7 +134,7 @@ class DataEntityType
         ');
         $query->execute();
 
-        return $query->fetchAll(PDO::FETCH_ASSOC);
+        return $query->fetchAll(\PDO::FETCH_ASSOC);
     }
 
     /**
@@ -161,7 +161,7 @@ class DataEntityType
         );
         $query->execute();
 
-        return $query->fetch(PDO::FETCH_ASSOC);
+        return $query->fetch(\PDO::FETCH_ASSOC);
     }
 
     /**
@@ -186,7 +186,7 @@ class DataEntityType
         );
         $query->execute();
 
-        return $query->fetchAll(PDO::FETCH_CLASS, 'DataEntity');
+        return $query->fetchAll(\PDO::FETCH_CLASS, 'DataEntity');
     }
 
     /**
@@ -247,7 +247,7 @@ class DataEntityType
             );
             $query->execute();
 
-            return $query->fetchAll(PDO::FETCH_CLASS, 'DataEntity');
+            return $query->fetchAll(\PDO::FETCH_CLASS, 'DataEntity');
         }
 
         return false;

@@ -134,7 +134,7 @@ class DataEntity {
       );
     $query->execute();
 
-    return $query->fetchAll(PDO::FETCH_CLASS, 'DataEntity');
+    return $query->fetchAll(\PDO::FETCH_CLASS, 'DataEntity');
   }
 
   /**
@@ -192,7 +192,7 @@ class DataEntity {
       WHERE _VALUE.dataobject_id = ". $this->id
       );
     $query->execute();
-    $results = $query->fetchAll(PDO::FETCH_OBJ);
+    $results = $query->fetchAll(\PDO::FETCH_OBJ);
     foreach($results as $item) $this->{$item->name} = $item->value;
 
     return (true && $results);
@@ -213,7 +213,7 @@ class DataEntity {
       WHERE _DATA.id = ". $this->id
       );
     $query->execute();
-    $result = $query->fetch(PDO::FETCH_ASSOC);
+    $result = $query->fetch(\PDO::FETCH_ASSOC);
     $this->typeId = $result['id'];
     $this->typeName = $result['name'];
 

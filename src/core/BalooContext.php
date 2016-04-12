@@ -6,9 +6,9 @@ namespace Baloo;
  * class BalooContext
  * Class that manages global BALOO execution context (mandatory).
  */
- 
+
 use Baloo\BalooException;
- 
+
 class BalooContext
 {
     public static $debug = false;

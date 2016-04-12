@@ -26,8 +26,8 @@ class Packman {
   const JSON_EXT = '.pack.json';
   const GZIP_EXT = '.pack.json.gz';
 
-  private static $packPath = __DIR__.'/../../public/packs/';  
-  
+  private static $packPath = __DIR__.'/../../public/packs/';
+
   private function __construct() {
     //nothing
   }
@@ -55,7 +55,7 @@ class Packman {
       }
 
       $pack = new Package($jsonPack);
-      
+
       return $pack;
     }
     catch(Exception $e) {
@@ -126,7 +126,7 @@ class Packman {
     return (bool)$result;
   }
 
-  static private function _createDataSourceFromPack(object $datasource) {
+  static private function _createDataSourceFromPack($datasource) {
     if(is_object($datasource)) {
       $dsID = DataSourceManager::insertDataSource($datasource->name, $datasource->version, $datasource->type);
     }
