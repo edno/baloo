@@ -19,6 +19,7 @@ BalooContext::loadLibrary('arrays'); // workaround for non-class namespace
 use Baloo\Lib\Arrays;
 
 class Packman {
+  use \Baloo\Singleton;
 
   const NAME = 'BALOO PACKage MANager';
   const VERSION = '0.20160410';
@@ -27,22 +28,18 @@ class Packman {
   const GZIP_EXT = '.pack.json.gz';
 
   private static $packPath = __DIR__.'/../../public/packs/';
-
-  private function __construct() {
-    //nothing
-  }
-
-  static public function listPackFile($bNotInstalledOnly = false) {
+  
+  public function listPackFile($bNotInstalledOnly = false) {
     // list package available or installed
   }
 
-  static public function isPackInstalled(string $strPack) {
+  public function isPackInstalled(string $strPack) {
     // check if the pack is already installed
   }
 
-  static public function loadPackFile(string $strPack) {
+  public function loadPackFile(string $strPack) {
     try {
-      $packfile = self::_getPackFile($strPack);
+      $packfile = $this->_getPackFile($strPack);
       $ext = pathinfo($packfile, PATHINFO_EXTENSION);
       if(preg_match('/gz/i', $ext)) {
         ob_start();
@@ -63,7 +60,7 @@ class Packman {
     }
   }
 
-  static private function _getPackFile(string $strPack) {
+  private function _getPackFile(string $strPack) {
     if(is_readable(self::$packPath.$strPack.self::JSON_EXT)) {
       return self::$packPath.$strPack.self::JSON_EXT;
     }
@@ -75,21 +72,21 @@ class Packman {
     }
   }
 
-  static public function installPack(Package $pack, string $name = null) {
+  public function installPack(Package $pack, string $name = null) {
     $result = false;
 
     try {
       if(isset($pack->datasourcetype)) {
-        if((bool)DataSourceManager::getDataSourceTypeID($pack->datasourcetype->name) === false) {
-          DataSourceManager::insertDataSourceType($pack->datasourcetype->name, $pack->datasourcetype->version); // if failed no consequence
+        if((bool)DataSourceManager::getInstance()->getDataSourceTypeID($pack->datasourcetype->name) === false) {
+          DataSourceManager::getInstance()->insertDataSourceType($pack->datasourcetype->name, $pack->datasourcetype->version); // if failed no consequence
         }
       }
       if(isset($pack->datasource)) {
-        if(DataSourceManager::getDataSource($pack->datasource->name) !== false) {
+        if(DataSourceManager::getInstance()->getDataSource($pack->datasource->name) !== false) {
           throw new PackManException('Datasource "'. $pack->datasource->name .'" already exists.', 100);
         }
         else {
-          $result = self::_createDataSourceFromPack($pack->datasource) || $result;
+          $result = $this->_createDataSourceFromPack($pack->datasource) || $result;
         }
       }
     }
@@ -100,65 +97,67 @@ class Packman {
     return (bool)$result;
   }
 
-  static public function dumpPack(string $name) {
+  public function dumpPack(string $name) {
     //todo
   }
 
-  static public function removePack(object $pack, $removeDSType = true) {
+  public function removePack(object $pack, $removeDSType = true) {
     $result = false;
     if(is_null($pack) === false) {
-      if(DataSourceManager::getDataSource($pack->datasource->name) === false) {
+      if(DataSourceManager::getInstance()->getDataSource($pack->datasource->name) === false) {
         throw new PackManException('Datasource "'. $pack->datasource->name .'" doesn\'t exist.', 200);
       }
       else {
-        BalooContext::$pdo->beginTransaction();
+        BalooContext::getInstance()->getPDO()->beginTransaction();
 
-        DataSourceManager::deleteEntityProperties($pack->datasource->name);
-        DataSourceManager::deleteEntityTypes($pack->datasource->name);
+        DataSourceManager::getInstance()->deleteEntityProperties($pack->datasource->name);
+        DataSourceManager::getInstance()->deleteEntityTypes($pack->datasource->name);
 
-        if($removeDSType === true) DataSourceManager::deleteDataSourceType($pack->datasource->name);
-        DataSourceManager::deleteDataSource($pack->datasource->name);
+        if($removeDSType === true) DataSourceManager::getInstance()->deleteDataSourceType($pack->datasource->name);
+        DataSourceManager::getInstance()->deleteDataSource($pack->datasource->name);
 
-        $result = BalooContext::$pdo->commit();
+        $result = BalooContext::getInstance()->getPDO()->commit();
       }
     }
 
     return (bool)$result;
   }
 
-  static private function _createDataSourceFromPack($datasource) {
+  private function _createDataSourceFromPack($datasource) {
     if(is_object($datasource)) {
-      $dsID = DataSourceManager::insertDataSource($datasource->name, $datasource->version, $datasource->type);
+      $dsID = DataSourceManager::getInstance()->insertDataSource($datasource->name, $datasource->version, $datasource->type);
     }
     else {
       throw new PackManException('Invalid datasource object.');
     }
 
-    BalooContext::$pdo->beginTransaction();
-    $propTypes = self::_listPackPropertyTypes($datasource->entities);
+    BalooContext::getInstance()->getPDO()->beginTransaction();
+    $propTypes = $this->_listPackPropertyTypes($datasource->entities);
     foreach($propTypes as $type) {
       list($name, $format) = $type;
-      DataSourceManager::insertDataTypeFieldType($name, $format);
+      DataSourceManager::getInstance()->insertDataTypeFieldType($name, $format);
     }
-    $result = BalooContext::$pdo->commit();
-
-    foreach($datasource->entities as $type) {
-      $typeID = DataSourceManager::insertDataType($dsID, $type->name);
-      BalooContext::$pdo->beginTransaction();
-      foreach($type->properties as $property) {
-        DataSourceManager::insertDataTypeField($typeID,
-                                               $property->name,
-                                               $property->type,
-                                               (isset($item->format)?$item->format:null),
-                                               (isset($item->custom)?$item->custom:0));
+    $result = BalooContext::getInstance()->getPDO()->commit();
+    
+    if($result) {
+        foreach($datasource->entities as $type) {
+          $typeID = DataSourceManager::getInstance()->insertDataType($dsID, $type->name);
+          BalooContext::getInstance()->getPDO()->beginTransaction();
+          foreach($type->properties as $property) {
+            DataSourceManager::getInstance()->insertDataTypeField($typeID,
+                                                   $property->name,
+                                                   $property->type,
+                                                   (isset($item->format)?$item->format:null),
+                                                   (isset($item->custom)?$item->custom:0));
+          }
+          $result = BalooContext::getInstance()->getPDO()->commit();
       }
-      $result = BalooContext::$pdo->commit();
     }
 
     return (bool)$result;
   }
 
-  static private function _listPackPropertyTypes($entities) {
+  private function _listPackPropertyTypes($entities) {
     $list = array();
     // get complete list of properties
     foreach($entities as $type) {

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit backupGlobals="false"
          backupStaticAttributes="false"
-         bootstrap="./vendor/autoload.php"
+         bootstrap="./tests/framework/bootstrap.php"
          colors="true"
          convertErrorsToExceptions="true"
          convertNoticesToExceptions="true"
@@ -12,7 +12,8 @@
          
     <php>
         <var name="DB_SQL" value="db_sqlite.sql" />
-        <var name="DB_DSN" value="sqlite::memory:" />
+        <!--var name="DB_DSN" value="sqlite::memory:" /-->
+        <var name="DB_DSN" value="sqlite:./tests/tmp/   baloo.db3" />
         <var name="DB_USER" />
         <var name="DB_PASSWD" />
         <var name="DB_DBNAME" />
@@ -21,9 +22,13 @@
     <testsuites>
         <testsuite name="BALOO Test Suite">
             <directory>./tests/</directory>
+            <exclude>./tests/packman/</exclude>
+            <exclude>./tests/framework/</exclude>
+            <exclude>./tests/_data/</exclude>
         </testsuite>
         <testsuite name="PackMan Test Suite">
-            <directory>./tests/packman</directory>
+            <directory>./tests/packman/</directory>
+            <exclude>./tests/packman/_packs/</exclude>
         </testsuite>
     </testsuites>
     

@@ -9,11 +9,11 @@ namespace Baloo;
  * @package baloo
  */
 
-class DataEntityType
+class DataEntityType extends StaticProxy
 {
     protected $id = null;
     protected $name = null;
-
+    
     /**
      * Constructor.
      *
@@ -57,7 +57,7 @@ class DataEntityType
      */
     public static function getEntityTypeNameById($id)
     {
-        $query = BalooContext::$pdo->prepare('
+        $query = BalooContext::getInstance()->getPDO()->prepare('
         SELECT name
         FROM '.BalooModel::tableEntityType().' AS _TYPE
         WHERE _TYPE.id='.$id
@@ -76,7 +76,7 @@ class DataEntityType
      */
     public static function getEntityTypeIdByName($name)
     {
-        $query = BalooContext::$pdo->prepare('
+        $query = BalooContext::getInstance()->getPDO()->prepare('
         SELECT id
         FROM '.BalooModel::tableEntityType()." AS _TYPE
         WHERE _TYPE.name='".$name."'"
@@ -93,7 +93,7 @@ class DataEntityType
      */
     public function getEntityTypePropertyList()
     {
-        $query = BalooContext::$pdo->prepare('
+        $query = BalooContext::getInstance()->getPDO()->prepare('
         SELECT _FIELD.name AS name, _FIELD.custom AS iscustom, _PROP.name AS type, _PROP.format AS format
         FROM '.BalooModel::tableEntityField().' AS _FIELD
         INNER JOIN '.BalooModel::tableEntityType().' AS _TYPE
@@ -109,7 +109,7 @@ class DataEntityType
 
     public static function getTypePropertyId($name)
     {
-        $query = BalooContext::$pdo->prepare('
+        $query = BalooContext::getInstance()->getPDO()->prepare('
         SELECT id
         FROM '.BalooModel::tableEntityFieldInfo().'
         WHERE name=:name
@@ -128,7 +128,7 @@ class DataEntityType
      */
     public static function getPropertyTypesList()
     {
-        $query = BalooContext::$pdo->prepare('
+        $query = BalooContext::getInstance()->getPDO()->prepare('
         SELECT _PROP.id AS id, _PROP.name AS name, _PROP.format AS format
         FROM '.BalooModel::tableEntityFieldInfo().' AS _PROP
         ');
@@ -149,7 +149,7 @@ class DataEntityType
         } else {
             $propertyIdentifier = "name='".$identifier."'";
         }
-        $query = BalooContext::$pdo->prepare('
+        $query = BalooContext::getInstance()->getPDO()->prepare('
         SELECT _PROP.name AS type, _PROP.format AS format
         FROM '.BalooModel::tableEntityField().' AS _FIELD
         INNER JOIN '.BalooModel::tableEntityType().' AS _TYPE
@@ -177,7 +177,7 @@ class DataEntityType
         if ($excludeChildObject === true) {
             $condition .= ' AND _DATA.parent_id=0';
         }
-        $query = BalooContext::$pdo->prepare('
+        $query = BalooContext::getInstance()->getPDO()->prepare('
         SELECT _DATA.id, _DATA.'.BalooModel::tableEntityType().'_id as typeId
         FROM '.BalooModel::tableEntityObject().' AS _DATA
         INNER JOIN '.BalooModel::tableEntityType().' AS _TYPE
@@ -237,7 +237,7 @@ class DataEntityType
                 $childCondition .= ' AND _DATA.parent_id=0';
             }
 
-            $query = BalooContext::$pdo->prepare('
+            $query = BalooContext::getInstance()->getPDO()->prepare('
             SELECT DISTINCT _DATA.id, _DATA.'.BalooModel::tableEntityType().'_id AS typeId
             FROM '.BalooModel::tableEntityObject().' AS _DATA
             INNER JOIN '.BalooModel::tableEntityType().' AS _TYPE

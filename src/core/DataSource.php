@@ -48,7 +48,7 @@ class DataSource
      */
     public static function getDataSourceByName($name)
     {
-        $query = BalooContext::$pdo->prepare('
+        $query = BalooContext::getInstance()->getPDO()->prepare('
         SELECT _SOURCE.id AS id, _SOURCE.name AS name, _SOURCE_TYPE.name AS type
         FROM '.BalooModel::tableDataSource().' AS _SOURCE
         INNER JOIN '.BalooModel::tableDataSourceType().' AS _SOURCE_TYPE
@@ -70,7 +70,7 @@ class DataSource
      */
     public static function getDataSourceList()
     {
-        $query = BalooContext::$pdo->prepare('
+        $query = BalooContext::getInstance()->getPDO()->prepare('
         SELECT id, name
         FROM '.BalooModel::tableDataSource()
         );
@@ -86,7 +86,7 @@ class DataSource
      */
     public function getEntityTypeList()
     {
-        $query = BalooContext::$pdo->query('
+        $query = BalooContext::getInstance()->getPDO()->query('
         SELECT _TYPE.id as id, _TYPE.name as name, _SOURCE.name AS datasourcename
         FROM '.BalooModel::tableEntityType().' AS _TYPE
         INNER JOIN '.BalooModel::tableDataSource().' AS _SOURCE
@@ -107,7 +107,7 @@ class DataSource
      */
     public function getEntityTypeByName($typeName)
     {
-        $query = BalooContext::$pdo->prepare('
+        $query = BalooContext::getInstance()->getPDO()->prepare('
         SELECT _TYPE.id as id, _TYPE.name as name, _SOURCE.name AS datasourcename
         FROM '.BalooModel::tableEntityType().' AS _TYPE
         INNER JOIN '.BalooModel::tableDataSource().' AS _SOURCE

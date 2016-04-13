@@ -26,10 +26,10 @@
     },
     "require-dev": {
         "ext-simplexml": "*",
-        "behat/behat": "~2.5",
         "phpunit/phpunit": "~5.3",
         "phpunit/dbunit": "~2.0",
-        "mikey179/vfsStream": "~1.6"
+        "mikey179/vfsStream": "~1.6",
+		"mockery/mockery": "@stable"
     },
     "config": {
         "bin-dir": "bin/"

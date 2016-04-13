@@ -15,10 +15,12 @@ namespace Baloo;
 
 class DataSourceManager
 {
-    public static function getDataSourceType($name)
+    use Singleton;
+
+    public function getDataSourceType($name)
     {
         $result = false;
-        $datasource = self::getDataSource($name);
+        $datasource = $this->getDataSource($name);
         if (is_object($datasource)) {
             $type = $datasource->getDataSourceType();
             $result = is_null($type) ? false : $type;
@@ -27,14 +29,14 @@ class DataSourceManager
         return $result;
     }
 
-    public static function getDataSource($name)
+    public function getDataSource($name)
     {
         return DataSource::getDataSourceByName($name);
     }
 
-    public static function deleteEntityTypes($datasource_name = null)
+    public function deleteEntityTypes($datasource_name = null)
     {
-        $query = BalooContext::$pdo->prepare('
+        $query = BalooContext::getInstance()->getPDO()->prepare('
         DELETE FROM '.BalooModel::tableEntityType().'
         WHERE EXISTS (
         SELECT 1
@@ -46,9 +48,9 @@ class DataSourceManager
         return $query->execute(array(':name' => $datasource_name));
     }
 
-    public static function deleteEntityProperties($datasource_name = null)
+    public function deleteEntityProperties($datasource_name = null)
     {
-        $query = BalooContext::$pdo->prepare('
+        $query = BalooContext::getInstance()->getPDO()->prepare('
         DELETE
         FROM '.BalooModel::tableEntityField().'
         WHERE EXISTS(
@@ -63,9 +65,9 @@ class DataSourceManager
         return $query->execute(array(':name' => $datasource_name));
     }
 
-    public static function deleteDataSource($datasource_name = null)
+    public function deleteDataSource($datasource_name = null)
     {
-        $query = BalooContext::$pdo->prepare('
+        $query = BalooContext::getInstance()->getPDO()->prepare('
         DELETE FROM '.BalooModel::tableDataSource().'
         WHERE name=:name
         ');
@@ -73,9 +75,9 @@ class DataSourceManager
         return $query->execute(array(':name' => $datasource_name));
     }
 
-    public static function deleteDataSourceType($datasource_name = null)
+    public function deleteDataSourceType($datasource_name = null)
     {
-        $query = BalooContext::$pdo->prepare('
+        $query = BalooContext::getInstance()->getPDO()->prepare('
         DELETE FROM '.BalooModel::tableDataSourceType().'
         WHERE EXISTS(
         SELECT 1
@@ -87,9 +89,9 @@ class DataSourceManager
         return $query->execute(array(':name' => $datasource_name));
     }
 
-    public static function insertDataSourceType($name, $version)
+    public function insertDataSourceType($name, $version)
     {
-        $query = BalooContext::$pdo->prepare('
+        $query = BalooContext::getInstance()->getPDO()->prepare('
         INSERT INTO '.BalooModel::tableDataSourceType().' (name, version)
         VALUES (:name, :version)
         ');
@@ -97,9 +99,9 @@ class DataSourceManager
         return $query->execute(array(':name' => $name, ':version' => $version));
     }
 
-    public static function getDataSourceTypeId($name)
+    public function getDataSourceTypeId($name)
     {
-        $query = BalooContext::$pdo->prepare('
+        $query = BalooContext::getInstance()->getPDO()->prepare('
         SELECT id
         FROM '.BalooModel::tableDataSourceType().'
         WHERE name=:name
@@ -109,35 +111,35 @@ class DataSourceManager
         return (integer) $query->fetchColumn();
     }
 
-    public static function insertDataSource($name, $version = null, $type = null)
+    public function insertDataSource($name, $version = null, $type = null)
     {
         if (is_null($type) === false) {
-            $type = self::getDataSourceTypeId($type);
+            $type = $this->getDataSourceTypeId($type);
         }
-        $query = BalooContext::$pdo->prepare('
+        $query = BalooContext::getInstance()->getPDO()->prepare('
         INSERT INTO '.BalooModel::tableDataSource().' (name, version, '.BalooModel::tableDataSourceType().'_id)
         VALUES (:name, :version, :type_id)
         ');
         $query->execute(array(':name' => $name, ':version' => $version, ':type_id' => (integer) $type));
 
-        return BalooContext::$pdo->lastInsertId();
+        return BalooContext::getInstance()->getPDO()->lastInsertId();
     }
 
-    public static function insertDataType($datasource, $name)
+    public function insertDataType($datasource, $name)
     {
-        $query = BalooContext::$pdo->prepare('
+        $query = BalooContext::getInstance()->getPDO()->prepare('
         INSERT INTO '.BalooModel::tableEntityType().' (name, '.BalooModel::tableDataSource().'_id)
         VALUES (:name, :datasource_id)
         ');
         $query->execute(array(':name' => $name, ':datasource_id' => $datasource));
 
-        return BalooContext::$pdo->lastInsertId();
+        return BalooContext::getInstance()->getPDO()->lastInsertId();
     }
 
-    public static function insertDataTypeField($type, $name, $typefield = 0, $custom = 0)
+    public function insertDataTypeField($type, $name, $typefield = 0, $custom = 0)
     {
         $typefield = DataEntityType::getTypePropertyId($typefield);
-        $query = BalooContext::$pdo->prepare('
+        $query = BalooContext::getInstance()->getPDO()->prepare('
         INSERT INTO '.BalooModel::tableEntityField().'
         (name, custom, '.BalooModel::tableEntityType().'_id, '.BalooModel::tableEntityFieldInfo().'_id)
         VALUES (:name, :custom, :entitytype_id, :entityfieldtype_id)
@@ -146,9 +148,9 @@ class DataSourceManager
         return $query->execute(array(':name' => $name, ':custom' => (bool) $custom, ':entitytype_id' => (integer) $type, 'entityfieldtype_id' => (integer) $typefield));
     }
 
-    public static function insertDataTypeFieldType($name, $format = null)
+    public function insertDataTypeFieldType($name, $format = null)
     {
-        $query = BalooContext::$pdo->prepare('
+        $query = BalooContext::getInstance()->getPDO()->prepare('
         INSERT INTO '.BalooModel::tableEntityFieldInfo().' (name, format)
         VALUES (:name, :format)
         ');

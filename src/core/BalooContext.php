@@ -11,6 +11,8 @@ use Baloo\BalooException;
 
 class BalooContext
 {
+    use Singleton;
+
     public static $debug = false;
 
     private static $folders = array(
@@ -18,15 +20,15 @@ class BalooContext
         'core' => '../core',
     );
 
-    public static $pdo = null;
     public static $tablePrefix = '_';
     public static $rootDir = __DIR__;
 
     public static $logger = null;
-
-    public function __construct($pdo)
+    
+    private static $pdo = null;
+    
+    protected function __init()
     {
-        self::$pdo = $pdo;
         self::$logger = new BalooLogger();
     }
 
@@ -72,7 +74,7 @@ class BalooContext
      */
     public static function folder($key)
     {
-        return static::$rootDir.'/'.static::$folders[$key];
+        return self::$rootDir.'/'.self::$folders[$key];
     }
 
     /**
@@ -84,6 +86,14 @@ class BalooContext
      */
     public static function getFolders()
     {
-        return array_map(function ($folder) { return static::$rootDir.'/'.$folder; }, self::$folders);
+        return array_map(function ($folder) { return self::$rootDir.'/'.$folder; }, self::$folders);
+    }
+    
+    public function setPDO(\PDO $pdo) {
+        self::$pdo = $pdo;
+    }
+    
+    public function getPDO() {
+        return self::$pdo;
     }
 }
