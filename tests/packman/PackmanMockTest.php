@@ -40,13 +40,15 @@ class PackmanMockTest extends \Baloo\UnitTest\TestCase
     {
         // mock core classes
         $mockDSManager = $this->getMockFromSingleton('Baloo\DataSourceManager',
-                                                     ['getDataSourceTypeID']);
+                                                     ['getDataSourceTypeID',
+                                                      'insertDataSourceType',
+                                                      'getDataSource']);
         $mockDSManager
             ->expects($this->at(1))
             ->method('getDataSource')
             ->willReturn(true);
         $package = 'pack4test';
         $pack = $this->packman->loadPackFile($package);
-        $this->packman->installPack($pack)
+        $this->packman->installPack($pack);
     }
 }
