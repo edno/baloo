@@ -16,7 +16,7 @@
             "Baloo\\Packman\\": "src/core/",
             "Baloo\\Lib\\": "src/lib/",
 			"Baloo\\Modules\\": "src/modules/",
-			"Baloo\\UnitTest\\": "tests/framework/"
+			"Baloo\\UnitTests\\": "tests/"
         }
     },
     "require": {
@@ -28,9 +28,17 @@
         "ext-simplexml": "*",
         "phpunit/phpunit": "~5.3",
         "phpunit/dbunit": "~2.0",
-        "mikey179/vfsStream": "~1.6"
+        "mikey179/vfsStream": "~1.6",
+        "squizlabs/php_codesniffer": "*",
+        "fabpot/php-cs-fixer": "*",
+        "pdepend/pdepend" : "*",
+        "phpmd/phpmd" : "*"
     },
     "config": {
         "bin-dir": "bin/"
+    },
+    "scripts": {
+        "post-install-cmd": "pre-commit install",
+        "post-update-cmd": "pre-commit autoupdate"
     }
 }

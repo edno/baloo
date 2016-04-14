@@ -48,7 +48,8 @@ class DataSource
      */
     public static function getDataSourceByName($name)
     {
-        $query = BalooContext::getInstance()->getPDO()->prepare('
+        $query = BalooContext::getInstance()->getPDO()->prepare(
+            '
         SELECT _SOURCE.id AS id, _SOURCE.name AS name, _SOURCE_TYPE.name AS type
         FROM '.BalooModel::tableDataSource().' AS _SOURCE
         INNER JOIN '.BalooModel::tableDataSourceType().' AS _SOURCE_TYPE
@@ -60,7 +61,7 @@ class DataSource
 
         $result = $query->fetch(\PDO::FETCH_CLASS);
         if (is_null($result)) {
-          $result = false;
+            $result = false;
         }
 
         return $result;
@@ -75,7 +76,8 @@ class DataSource
      */
     public static function getDataSourceList()
     {
-        $query = BalooContext::getInstance()->getPDO()->prepare('
+        $query = BalooContext::getInstance()->getPDO()->prepare(
+            '
         SELECT id, name
         FROM '.BalooModel::tableDataSource()
         );
@@ -91,7 +93,8 @@ class DataSource
      */
     public function getEntityTypeList()
     {
-        $query = BalooContext::getInstance()->getPDO()->query('
+        $query = BalooContext::getInstance()->getPDO()->query(
+            '
         SELECT _TYPE.id as id, _TYPE.name as name, _SOURCE.name AS datasourcename
         FROM '.BalooModel::tableEntityType().' AS _TYPE
         INNER JOIN '.BalooModel::tableDataSource().' AS _SOURCE
@@ -112,7 +115,8 @@ class DataSource
      */
     public function getEntityTypeByName($typeName)
     {
-        $query = BalooContext::getInstance()->getPDO()->prepare('
+        $query = BalooContext::getInstance()->getPDO()->prepare(
+            '
         SELECT _TYPE.id as id, _TYPE.name as name, _SOURCE.name AS datasourcename
         FROM '.BalooModel::tableEntityType().' AS _TYPE
         INNER JOIN '.BalooModel::tableDataSource().' AS _SOURCE
@@ -125,7 +129,7 @@ class DataSource
 
         $result = $query->fetch(\PDO::FETCH_CLASS);
         if (is_null($result)) {
-          $result = false;
+            $result = false;
         }
 
         return $result;
@@ -142,9 +146,13 @@ class DataSource
     {
         $results = $this->getEntityTypeList();
         if ($results) {
-            array_walk($results, function (&$item, $key, $excludeChildObject) {
-                $item = array('type' => $item, 'data' => $item->getEntityList($excludeChildObject));
-            }, $excludeChildObject);
+            array_walk(
+                $results,
+                function (&$item, $key, $excludeChildObject) {
+                    $item = array('type' => $item, 'data' => $item->getEntityList($excludeChildObject));
+                },
+                $excludeChildObject
+            );
         }
 
         return $results;

@@ -6,7 +6,7 @@ namespace Baloo\Packman;
  * class PackmanException
  * Class that manages Packman exceptions.
  */
-class PackmanException  extends \Exception
+class PackManException extends \Exception
 {
     public function __construct($message = '', $code = 0, $previous = null)
     {

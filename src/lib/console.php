@@ -4,6 +4,7 @@ namespace Baloo\Lib\Console;
 
 const ISCLI = (PHP_SAPI === 'cli');
 
-function readConsole() {
+function readConsole()
+{
     return trim(fgets(STDIN));
 }

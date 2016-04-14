@@ -1,20 +1,22 @@
 <?php
 
-use Baloo\Packman\Packman;
+namespace Baloo\UnitTests;
 
+use Baloo\Packman\Packman;
 use org\bovigo\vfs\vfsStream;
 
 /**
  * Using mock singleton requires to execute tests in a separate process
+ *
  * @runTestsInSeparateProcesses
  */
-class PackmanMockTest extends \Baloo\UnitTest\TestCase
+class PackmanMockTest extends Framework\TestCase
 {
     public $packman;
 
-    static public $pathPack;
+    public static $pathPack;
 
-    static public function setUpBeforeClass()
+    public static function setUpBeforeClass()
     {
         self::$pathPack = __ROOT__.$GLOBALS['PATH_PACKS'];
     }
@@ -28,7 +30,6 @@ class PackmanMockTest extends \Baloo\UnitTest\TestCase
 
     public function tearDown()
     {
-
     }
     /**
      * @covers Baloo\Packman\Packman::installPack
@@ -39,14 +40,17 @@ class PackmanMockTest extends \Baloo\UnitTest\TestCase
     public function testInstallPackUseMockObjectExceptionPackExist()
     {
         // mock core classes
-        $mockDSManager = $this->getMockFromSingleton('Baloo\DataSourceManager',
-                                                     ['getDataSourceTypeID',
+        $mockDSManager = $this->getMockFromSingleton(
+            'Baloo\DataSourceManager',
+            ['getDataSourceTypeID',
                                                       'insertDataSourceType',
-                                                      'getDataSource']);
+            'getDataSource']
+        );
         $mockDSManager
             ->expects($this->at(1))
             ->method('getDataSource')
             ->willReturn(true);
+
         $package = 'pack4test';
         $pack = $this->packman->loadPackFile($package);
         $this->packman->installPack($pack);

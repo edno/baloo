@@ -26,16 +26,16 @@ class BalooPDO extends \PDO
         $this->pass = $pass;
 
         switch ($this->engine) {
-                case 'sqlite':
-                    parent::__construct('sqlite:messaging.sqlite3');
-                    break;
-                case 'memory':
-                    parent::__construct('sqlite::memory:');
-                    break;
-                default:
-                    $dns = $this->engine.':dbname='.$this->database.';host='.$this->host;
-                    parent::__construct($dns, $this->user, $this->pass);
-            }
+        case 'sqlite':
+            parent::__construct('sqlite:messaging.sqlite3');
+            break;
+        case 'memory':
+            parent::__construct('sqlite::memory:');
+            break;
+        default:
+            $dns = $this->engine.':dbname='.$this->database.';host='.$this->host;
+            parent::__construct($dns, $this->user, $this->pass);
+        }
     }
 
     public function prepare($query, $options = null)

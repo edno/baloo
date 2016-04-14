@@ -1,25 +1,25 @@
 <?php
 
+namespace Baloo\UnitTests;
+
 use Baloo\Packman\Packman;
-
-use Baloo\UnitTest\MockSingleton;
-
 use org\bovigo\vfs\vfsStream;
 
-class PackmanTest extends \Baloo\UnitTest\DatabaseTestCase
+class PackmanTest extends Framework\DatabaseTestCase
 {
     public $packman;
 
-    static public $pathPack;
-    static public $pathData;
+    public static $pathPack;
+    public static $pathData;
 
-    static public function setUpBeforeClass()
+    public static function setUpBeforeClass()
     {
         self::$pathPack = __ROOT__.$GLOBALS['PATH_PACKS'];
         self::$pathData = __ROOT__.$GLOBALS['PATH_DATA'];
     }
 
-    public function setUp() {
+    public function setUp()
+    {
         $pdo = $this->getConnection()->getConnection();
         \Baloo\BalooContext::getInstance()->setPDO($pdo);
 
@@ -30,7 +30,6 @@ class PackmanTest extends \Baloo\UnitTest\DatabaseTestCase
 
     public function tearDown()
     {
-
     }
 
     /**
@@ -42,40 +41,40 @@ class PackmanTest extends \Baloo\UnitTest\DatabaseTestCase
     }
 
     /**
-     * @covers Baloo\Packman\Packman::_getPackFile
+     * @covers Baloo\Packman\Packman::__getPackFile
      * @group private
      */
     public function testGetPackFileUseJson()
     {
         $package = 'pack4test';
-        $result = self::invokePrivateMethod($this->packman, '_getPackFile', $package);
+        $result = self::invokePrivateMethod($this->packman, '__getPackFile', $package);
         $this->assertEquals(self::$pathPack."${package}.pack.json", $result);
     }
 
     /**
-     * @covers Baloo\Packman\Packman::_getPackFile
+     * @covers Baloo\Packman\Packman::__getPackFile
      * @group private
      */
     public function testGetPackFileUseGzip()
     {
         $package = 'pack4test';
-        $result = self::invokePrivateMethod($this->packman, '_getPackFile', "${package}_gz");
+        $result = self::invokePrivateMethod($this->packman, '__getPackFile', "${package}_gz");
         $this->assertEquals(self::$pathPack."${package}_gz.pack.json.gz", $result);
     }
 
     /**
-     * @covers Baloo\Packman\Packman::_getPackFile
+     * @covers Baloo\Packman\Packman::__getPackFile
      * @expectedException Baloo\Packman\PackmanException
      * @group private
      */
     public function testGetPackFileExceptionNotPresent()
     {
         $package = 'nofile';
-        $result = self::invokePrivateMethod($this->packman, '_getPackFile', $package);
+        $result = self::invokePrivateMethod($this->packman, '__getPackFile', $package);
     }
 
     /**
-     * @covers Baloo\Packman\Packman::_getPackFile
+     * @covers Baloo\Packman\Packman::__getPackFile
      * @expectedException Baloo\Packman\PackmanException
      * @group private
      * @group mock
@@ -86,36 +85,36 @@ class PackmanTest extends \Baloo\UnitTest\DatabaseTestCase
         $root = vfsStream::setup('packs');
         $file = vfsStream::newFile("${package}.pack.json", 0000)->at($root);
         self::setPrivateProperty($this->packman, 'packPath', $root->path());
-        $result = self::invokePrivateMethod($this->packman, '_getPackFile', $package);
+        $result = self::invokePrivateMethod($this->packman, '__getPackFile', $package);
     }
 
     /**
-    * @covers Baloo\Packman\Packman::_getPackFile
+    * @covers Baloo\Packman\Packman::__getPackFile
     * @expectedException Baloo\Packman\PackmanException
     * @group private
     */
-   public function testGetPackFileExceptionFolderNotPresent()
-   {
-       $package = 'package';
-       self::setPrivateProperty($this->packman, 'packPath', __DIR__.'/notexist/');
-       $result = self::invokePrivateMethod($this->packman, '_getPackFile', $package);
-   }
+    public function testGetPackFileExceptionFolderNotPresent()
+    {
+        $package = 'package';
+        self::setPrivateProperty($this->packman, 'packPath', __DIR__.'/notexist/');
+        $result = self::invokePrivateMethod($this->packman, '__getPackFile', $package);
+    }
 
-   /**
-    * @covers Baloo\Packman\Packman::_getPackFile
+    /**
+    * @covers Baloo\Packman\Packman::__getPackFile
     * @expectedException Baloo\Packman\PackmanException
     * @group private
     */
-   public function testGetPackFileExceptionFolderNotReadable()
-   {
-       $package = 'package';
-       $root = vfsStream::setup('packs', 0000);
-       $file = vfsStream::newFile("${package}.pack.json")->at($root);
-       self::setPrivateProperty($this->packman, 'packPath', $root->path());
-       $result = self::invokePrivateMethod($this->packman, '_getPackFile', $package);
-   }
+    public function testGetPackFileExceptionFolderNotReadable()
+    {
+        $package = 'package';
+        $root = vfsStream::setup('packs', 0000);
+        $file = vfsStream::newFile("${package}.pack.json")->at($root);
+        self::setPrivateProperty($this->packman, 'packPath', $root->path());
+        $result = self::invokePrivateMethod($this->packman, '__getPackFile', $package);
+    }
 
-   /**
+    /**
     * @covers Baloo\Packman\Packman::loadPackFile
      * @covers Baloo\Packman\Packman::loadPackFile
      * @depends PackageTest::testNewPackageFromJson

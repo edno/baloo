@@ -3,7 +3,6 @@ require_once __DIR__.'/../vendor/autoload.php';
 
 use Baloo\Packman\Packman;
 use Baloo\Packman\PackmanException;
-
 use Baloo\BalooContext;
 use Baloo\BalooPDO;
 

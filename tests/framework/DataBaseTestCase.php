@@ -1,14 +1,14 @@
 <?php
 
-namespace Baloo\UnitTest;
+namespace Baloo\UnitTests\Framework;
 
-abstract class DatabaseTestCase extends \PHPUnit_Extensions_Database_TestCase
+abstract class DataBaseTestCase extends \PHPUnit_Extensions_Database_TestCase
 {
     use MockSingleton;
-	use ReflectionPrivate;
+    use ReflectionPrivate;
 
     // only instantiate pdo once for test clean-up/fixture load
-    static private $pdo = null;
+    private static $pdo = null;
 
     // only instantiate PHPUnit_Extensions_Database_DB_IDatabaseConnection once per test
     private $conn = null;
@@ -43,9 +43,9 @@ abstract class DatabaseTestCase extends \PHPUnit_Extensions_Database_TestCase
     /**
      * Set up the database
      */
-    private function initDatabase() {
-        $initSQL = file_get_contents( __DIR__.'/../_data/'.$GLOBALS['DB_SQL']);
+    private function initDatabase()
+    {
+        $initSQL = file_get_contents(__DIR__.'/../_data/'.$GLOBALS['DB_SQL']);
         self::$pdo->exec($initSQL);
     }
-
 }

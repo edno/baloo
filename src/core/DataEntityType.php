@@ -17,7 +17,8 @@ class DataEntityType extends StaticProxy
     /**
      * Constructor.
      *
-     * @param mixed $identifier Name or ID of entity type object to get, can be Null if called from PDO query (default=null)
+     * @param mixed $identifier Name or ID of entity type object to get,
+     *              can be Null if called from PDO query (default=null)
      */
     public function __construct($identifier = null)
     {
@@ -57,7 +58,8 @@ class DataEntityType extends StaticProxy
      */
     public static function getEntityTypeNameById($id)
     {
-        $query = BalooContext::getInstance()->getPDO()->prepare('
+        $query = BalooContext::getInstance()->getPDO()->prepare(
+            '
         SELECT name
         FROM '.BalooModel::tableEntityType().' AS _TYPE
         WHERE _TYPE.id='.$id
@@ -76,7 +78,8 @@ class DataEntityType extends StaticProxy
      */
     public static function getEntityTypeIdByName($name)
     {
-        $query = BalooContext::getInstance()->getPDO()->prepare('
+        $query = BalooContext::getInstance()->getPDO()->prepare(
+            '
         SELECT id
         FROM '.BalooModel::tableEntityType()." AS _TYPE
         WHERE _TYPE.name='".$name."'"
@@ -93,7 +96,8 @@ class DataEntityType extends StaticProxy
      */
     public function getEntityTypePropertyList()
     {
-        $query = BalooContext::getInstance()->getPDO()->prepare('
+        $query = BalooContext::getInstance()->getPDO()->prepare(
+            '
         SELECT _FIELD.name AS name, _FIELD.custom AS iscustom, _PROP.name AS type, _PROP.format AS format
         FROM '.BalooModel::tableEntityField().' AS _FIELD
         INNER JOIN '.BalooModel::tableEntityType().' AS _TYPE
@@ -109,11 +113,13 @@ class DataEntityType extends StaticProxy
 
     public static function getTypePropertyId($name)
     {
-        $query = BalooContext::getInstance()->getPDO()->prepare('
+        $query = BalooContext::getInstance()->getPDO()->prepare(
+            '
         SELECT id
         FROM '.BalooModel::tableEntityFieldInfo().'
         WHERE name=:name
-        ');
+        '
+        );
         $query->execute(array(':name' => $name));
 
         return (integer) $query->fetchColumn();
@@ -128,10 +134,12 @@ class DataEntityType extends StaticProxy
      */
     public static function getPropertyTypesList()
     {
-        $query = BalooContext::getInstance()->getPDO()->prepare('
+        $query = BalooContext::getInstance()->getPDO()->prepare(
+            '
         SELECT _PROP.id AS id, _PROP.name AS name, _PROP.format AS format
         FROM '.BalooModel::tableEntityFieldInfo().' AS _PROP
-        ');
+        '
+        );
         $query->execute();
 
         return $query->fetchAll(\PDO::FETCH_ASSOC);
@@ -149,7 +157,8 @@ class DataEntityType extends StaticProxy
         } else {
             $propertyIdentifier = "name='".$identifier."'";
         }
-        $query = BalooContext::getInstance()->getPDO()->prepare('
+        $query = BalooContext::getInstance()->getPDO()->prepare(
+            '
         SELECT _PROP.name AS type, _PROP.format AS format
         FROM '.BalooModel::tableEntityField().' AS _FIELD
         INNER JOIN '.BalooModel::tableEntityType().' AS _TYPE
@@ -163,11 +172,10 @@ class DataEntityType extends StaticProxy
 
         $result = $query->fetch(\PDO::FETCH_ASSOC);
         if (is_null($result)) {
-          $result = false;
+            $result = false;
         }
 
         return $result;
-
     }
 
     /**
@@ -183,7 +191,8 @@ class DataEntityType extends StaticProxy
         if ($excludeChildObject === true) {
             $condition .= ' AND _DATA.parent_id=0';
         }
-        $query = BalooContext::getInstance()->getPDO()->prepare('
+        $query = BalooContext::getInstance()->getPDO()->prepare(
+            '
         SELECT _DATA.id, _DATA.'.BalooModel::tableEntityType().'_id as typeId
         FROM '.BalooModel::tableEntityObject().' AS _DATA
         INNER JOIN '.BalooModel::tableEntityType().' AS _TYPE
@@ -197,8 +206,10 @@ class DataEntityType extends StaticProxy
 
     /**
      * Give the list of existing entities for current type filtered on properties value
-     *    getEntityByPropertyValue(array('summary' => 'demo', 'description' => 'demo')) will return objects with properties 'summary' = 'demo' AND 'description' = 'demo'
-     *     getEntityByPropertyValue(array('summary' => array('demo', 'subject'))) will return objects with property 'summary' = 'demo' OR 'subject'.
+     *    getEntityByPropertyValue(array('summary' => 'demo', 'description' => 'demo'))
+     *      will return objects with properties 'summary' = 'demo' AND 'description' = 'demo'
+     *    getEntityByPropertyValue(array('summary' => array('demo', 'subject')))
+     *      will return objects with property 'summary' = 'demo' OR 'subject'.
      *
      * @param mixed[] $filter             Array(propertie,value) of property filters (default=null).
      * @param bool    $excludeChildObject Set if child entities are exclude from list (default=true)
@@ -217,25 +228,29 @@ class DataEntityType extends StaticProxy
                     $values = array($values);
                 }
                 // parse value list of each properties and return a SQL sub criteria
-                $valueQuery = array_reduce($values, function ($query, $value) {
-                                                        if ($query != '') {
-                                                            $query .= ' OR ';
-                                                        }
+                $valueQuery = array_reduce(
+                    $values,
+                    function ($query, $value) {
+                        if ($query != '') {
+                            $query .= ' OR ';
+                        }
 
                                                         return $query .= "_VALUE.value='".$value."'";
-                                                    }, '');
+                    },
+                    ''
+                );
                 // prepare field/value SQL criteria
-               $filterQuery = '
+                $filterQuery = '
                _DATA.id IN (
                SELECT DISTINCT _VALUE.'.BalooModel::tableEntityObject().'_id
                FROM '.BalooModel::tableEntityObjectValue().' AS _VALUE
                INNER JOIN '.BalooModel::tableEntityField().' AS _FIELD
                ON _FIELD.id=_VALUE.'.BalooModel::tableEntityField()."_id
                WHERE (_FIELD.name='".$propertie."' AND ".$valueQuery.'))';
-               if ($filterCondition != '') {
-                  $filterCondition .= ' AND ';
-               }
-               $filterCondition .= $filterQuery;
+                if ($filterCondition != '') {
+                    $filterCondition .= ' AND ';
+                }
+                $filterCondition .= $filterQuery;
             }
 
             /* Child entities SQL criteria */
@@ -243,7 +258,8 @@ class DataEntityType extends StaticProxy
                 $childCondition .= ' AND _DATA.parent_id=0';
             }
 
-            $query = BalooContext::getInstance()->getPDO()->prepare('
+            $query = BalooContext::getInstance()->getPDO()->prepare(
+                '
             SELECT DISTINCT _DATA.id, _DATA.'.BalooModel::tableEntityType().'_id AS typeId
             FROM '.BalooModel::tableEntityObject().' AS _DATA
             INNER JOIN '.BalooModel::tableEntityType().' AS _TYPE
