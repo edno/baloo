@@ -32,12 +32,12 @@ class PackmanMockTest extends \Baloo\UnitTest\TestCase
     }
     /**
      * @covers Baloo\Packman\Packman::installPack
+     * @expectedException Baloo\Packman\PackmanException
      * @group public
      * @group mock
      */
     public function testInstallPackUseMockObjectExceptionPackExist()
     {
-        //return $this->markTestSkipped('Issue with getMockFromSingleton');
         // mock core classes
         $mockDSManager = $this->getMockFromSingleton('Baloo\DataSourceManager',
                                                      ['getDataSourceTypeID']);
