@@ -28,8 +28,7 @@
         "ext-simplexml": "*",
         "phpunit/phpunit": "~5.3",
         "phpunit/dbunit": "~2.0",
-        "mikey179/vfsStream": "~1.6",
-		"mockery/mockery": "@stable"
+        "mikey179/vfsStream": "~1.6"
     },
     "config": {
         "bin-dir": "bin/"

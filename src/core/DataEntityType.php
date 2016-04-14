@@ -13,7 +13,7 @@ class DataEntityType extends StaticProxy
 {
     protected $id = null;
     protected $name = null;
-    
+
     /**
      * Constructor.
      *
@@ -161,7 +161,13 @@ class DataEntityType extends StaticProxy
         );
         $query->execute();
 
-        return $query->fetch(\PDO::FETCH_ASSOC);
+        $result = $query->fetch(\PDO::FETCH_ASSOC);
+        if (is_null($result)) {
+          $result = false;
+        }
+
+        return $result;
+
     }
 
     /**
@@ -186,7 +192,7 @@ class DataEntityType extends StaticProxy
         );
         $query->execute();
 
-        return $query->fetchAll(\PDO::FETCH_CLASS, 'DataEntity');
+        return $query->fetchAll(\PDO::FETCH_CLASS, __NAMESPACE__.'\DataEntity');
     }
 
     /**
@@ -247,7 +253,7 @@ class DataEntityType extends StaticProxy
             );
             $query->execute();
 
-            return $query->fetchAll(\PDO::FETCH_CLASS, 'DataEntity');
+            return $query->fetchAll(\PDO::FETCH_CLASS, __NAMESPACE__.'\DataEntity');
         }
 
         return false;

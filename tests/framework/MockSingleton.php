@@ -7,20 +7,15 @@ namespace Baloo\UnitTest;
  */
 trait MockSingleton
 {
-    public function getMockFromSingleton($type, $methods = array(), array $arguments = array(), 
-                                         $mockClassName = '', $callAutoload = true, $cloneArguments = true, 
+    public function getMockFromSingleton($type, $methods = array(), array $arguments = array(),
+                                         $mockClassName = '', $callAutoload = true, $cloneArguments = true,
                                          $callOriginalMethods = false, $proxyTarget = null) {
-        $mock = call_user_func('self::getMock', $type, $methods, $arguments, $mockClassName, 
+        $mock = call_user_func('self::getMock', $type, $methods, $arguments, $mockClassName,
                                false, false, $callAutoload, $cloneArguments, $callOriginalMethods, $proxyTarget);
         $ref = new \ReflectionProperty($type, '__instance');
         $ref->setAccessible(true);
         $ref->setValue(null, $mock);
         return $mock;
     }
-    
-    public function resetMockSingleton($type) {
-        $ref = new \ReflectionProperty($type, '__instance');
-        $ref->setAccessible(true);
-        $ref->setValue(null, null);
-    }
+
 }

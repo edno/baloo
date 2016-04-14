@@ -4,7 +4,7 @@ namespace Baloo\UnitTest;
 
 abstract class DatabaseTestCase extends \PHPUnit_Extensions_Database_TestCase
 {
-	use MockSingleton;
+    use MockSingleton;
 	use ReflectionPrivate;
 
     // only instantiate pdo once for test clean-up/fixture load

@@ -55,10 +55,15 @@ class DataSource
         ON _SOURCE_TYPE.id = _SOURCE.'.BalooModel::tableDataSourceType()."_id
         WHERE _SOURCE.name='".$name."'"
         );
-        $query->setFetchMode(\PDO::FETCH_CLASS, 'DataSource');
+        $query->setFetchMode(\PDO::FETCH_CLASS, __NAMESPACE__.'\DataSource');
         $query->execute();
 
-        return $query->fetch(\PDO::FETCH_CLASS);
+        $result = $query->fetch(\PDO::FETCH_CLASS);
+        if (is_null($result)) {
+          $result = false;
+        }
+
+        return $result;
     }
 
     /**
@@ -95,7 +100,7 @@ class DataSource
         );
         $query->execute();
 
-        return $query->fetchAll(\PDO::FETCH_CLASS, 'DataEntityType');
+        return $query->fetchAll(\PDO::FETCH_CLASS, __NAMESPACE__.'\DataEntityType');
     }
 
     /**
@@ -115,10 +120,15 @@ class DataSource
         WHERE _TYPE.'.BalooModel::tableDataSource().'_id='.$this->id."
         AND _TYPE.name='".$typeName."'"
         );
-        $query->setFetchMode(\PDO::FETCH_CLASS, 'DataEntityType');
+        $query->setFetchMode(\PDO::FETCH_CLASS, __NAMESPACE__.'\DataEntityType');
         $query->execute();
 
-        return $query->fetch(\PDO::FETCH_CLASS);
+        $result = $query->fetch(\PDO::FETCH_CLASS);
+        if (is_null($result)) {
+          $result = false;
+        }
+
+        return $result;
     }
 
     /**

@@ -134,7 +134,7 @@ class DataEntity {
       );
     $query->execute();
 
-    return $query->fetchAll(\PDO::FETCH_CLASS, 'DataEntity');
+    return $query->fetchAll(\PDO::FETCH_CLASS, __NAMESPACE__.'DataEntity');
   }
 
   /**
@@ -171,10 +171,15 @@ class DataEntity {
         FROM ". BalooModel::tableEntityObject() ."
         WHERE id=". $this->id .")"
       );
-    $query->setFetchMode(PDO::FETCH_CLASS, 'DataEntity');
+    $query->setFetchMode(\PDO::FETCH_CLASS, __NAMESPACE__.'\DataEntity');
     $query->execute();
 
-    return $query->fetch(PDO::FETCH_CLASS);
+    $result = $query->fetch(\PDO::FETCH_CLASS);
+    if (is_null($result)) {
+      $result = false;
+    }
+
+    return $result;
   }
 
   /**
