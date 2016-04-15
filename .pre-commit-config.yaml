@@ -1,0 +1,13 @@
+-   repo: https://github.com/hootsuite/pre-commit-php.git
+    sha: 9a3b92d6e3368c74df50d84a877fd72a61ae1f9b
+    hooks:
+    -   id: php-lint-all
+    -   id: php-unit
+    -   id: php-cs
+        files: \.(php)$
+        args:
+        - --standard=PSR2
+    -   id: php-cbf
+        files: \.(php)$
+        args:
+        - --level=PSR2
