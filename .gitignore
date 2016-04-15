@@ -5,4 +5,4 @@ composer.phar
 composer.lock
 /vendor/
 /bin/
-/tests/tmp/*
+/tests/tmp/
