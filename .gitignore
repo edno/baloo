@@ -5,4 +5,10 @@ composer.phar
 composer.lock
 /vendor/
 /bin/
+
+### Temp test data ###
 /tests/tmp/
+
+### Temporary ignore packs and modules ###
+/public/packs/
+/src/modules/
