@@ -117,7 +117,7 @@ class PackmanTest extends Framework\DatabaseTestCase
     /**
     * @covers Baloo\Packman\Packman::loadPackFile
      * @covers Baloo\Packman\Packman::loadPackFile
-     * @depends PackageTest::testNewPackageFromJson
+     * @depends Baloo\UnitTests\PackageTest::testNewPackageUseJson
      * @group public
      */
     public function testLoadPackFileUseJson()
@@ -130,7 +130,7 @@ class PackmanTest extends Framework\DatabaseTestCase
 
     /**
      * @covers Baloo\Packman\Packman::loadPackFile
-     * @depends PackageTest::testNewPackageFromJson
+     * @depends Baloo\UnitTests\PackageTest::testNewPackageUseJson
      * @group public
      */
     public function testLoadPackFileUseGzip()
@@ -167,13 +167,13 @@ class PackmanTest extends Framework\DatabaseTestCase
 
     /**
      * @covers Baloo\Packman\Packman::installPack
-     * @depends PackmanTest::testLoadPackFileUseJson
+     * @depends Baloo\UnitTests\PackmanTest::testLoadPackFileUseJson
      * @group public
      */
     public function testInstallPack()
     {
         $package = 'pack4test';
-        $this->assertFalse(Baloo\DataSourceManager::getInstance()->getDataSource($package));
+        $this->assertFalse(\Baloo\DataSourceManager::getInstance()->getDataSource($package));
         $pack = $this->packman->loadPackFile($package);
         $result = $this->packman->installPack($pack);
         $this->assertTrue($result);
@@ -182,7 +182,7 @@ class PackmanTest extends Framework\DatabaseTestCase
     /**
      * @covers Baloo\Packman\Packman::installPack
      * @expectedException Baloo\Packman\PackmanException
-     * @depends PackageTest::testNewPackage
+     * @depends Baloo\UnitTests\PackageTest::testNewPackage
      * @group public
      */
     public function testInstallPackExceptionInvalid()

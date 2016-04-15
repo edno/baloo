@@ -29,14 +29,14 @@ class Package
         $vArgs = func_get_args();
         $nArgs = func_num_args();
         switch ($nArgs) {
-        case 1: //__construct(string $jsonString)
-            call_user_func_array(array($this, '__constructFromJSON'), $vArgs);
-        break;
-        case 3: //__construct(string $name, string $datasourcetype, string $datasource)
-            call_user_func_array(array($this, '__constructDefault'), $vArgs);
-        break;
-        default:
-            throw new PackmanException("Invalid Constructor Arguments", 0);
+            case 1: //__construct(string $jsonString)
+                call_user_func_array(array($this, '__constructFromJSON'), $vArgs);
+                break;
+            case 3: //__construct(string $name, string $datasourcetype, string $datasource)
+                call_user_func_array(array($this, '__constructDefault'), $vArgs);
+                break;
+            default:
+                throw new PackmanException("Invalid Constructor Arguments");
         }
     }
 
@@ -50,7 +50,7 @@ class Package
                     $this->datasourcetype = $pack->datasourcetype;
                     $this->datasource = $pack->datasource;
                 } else {
-                    throw new PackmanException("Invalid JSON Package", 0);
+                    throw new PackmanException("Invalid JSON Package");
                 }
             }
         } catch (\Exception $e) {
@@ -70,10 +70,10 @@ class Package
                 'name' => $datasource
                 ];
             } else {
-                throw new PackmanException("Invalid Constructor Arguments", 0);
+                throw new PackmanException("Invalid Constructor Arguments");
             }
         } catch (\Exception $e) {
-            throw $e;
+            throw new PackmanException($e->getMessage());
         }
     }
 }

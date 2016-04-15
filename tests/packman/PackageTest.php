@@ -21,17 +21,13 @@ class PackageTest extends Framework\TestCase
     /**
      * @covers Baloo\Packman\Package
      */
-    public function testNewPackageFromJson()
+    public function testNewPackageUseJson()
     {
-        $pack = new Package(
-            '
-            {
-                "name": "test_pack",
-                "datasourcetype": {"name": "test_datasourcetype"},
-                "datasource": {"name": "test_datasource"}
-            }
-        '
-        );
+        $pack = new Package('{
+            "name": "test_pack",
+            "datasourcetype": {"name": "test_datasourcetype"},
+            "datasource": {"name": "test_datasource"}
+        }');
         $this->assertInstanceOf('Baloo\Packman\Package', $pack);
         $this->assertEquals('test_pack', $pack->name);
         $this->assertEquals('test_datasourcetype', $pack->datasourcetype->name);
@@ -42,7 +38,7 @@ class PackageTest extends Framework\TestCase
      * @covers Baloo\Packman\Package
      * @expectedException Baloo\Packman\PackmanException
      */
-    public function testNewPackageFromEmpty()
+    public function testNewPackageUseEmpty()
     {
         $pack = new Package();
         $this->expectExceptionMessage('Syntax error, malformed JSON.');
@@ -52,7 +48,7 @@ class PackageTest extends Framework\TestCase
      * @covers Baloo\Packman\Package
      * @expectedException Baloo\Packman\PackmanException
      */
-    public function testNewPackageFromInvalidJson()
+    public function testNewPackageUseInvalidJson()
     {
         $pack = new Package(
             '
