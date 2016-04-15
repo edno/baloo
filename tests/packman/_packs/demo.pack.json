@@ -1,11 +1,11 @@
 {
 		"name": "alm",
 		"datasourcetype": {
-			"name": "HP ALM",
+			"name": "demo",
 			"version": "11.0"
 		},
 		"datasource": {
-			"name": "ALM",
+			"name": "demo",
 			"version": "1.0",
 			"type": "HP ALM",
 			"entities": [
@@ -23,7 +23,7 @@
 						{ "name": "execution_date", "type": "datetime" },
 						{ "name": "defectId", "type": "list", "format": ";"}
 						]
-				},			
+				},
 				{ "name": "defect", "properties": [
 						{ "name": "id", "type": "integer" },
 						{ "name": "title", "type": "string" },
