@@ -9,7 +9,7 @@ namespace Baloo\Lib\Json;
 function json_valid(string $strJson)
 {
     // decode the JSON data
-    $result = json_decode($strJson);
+    json_decode($strJson);
 
     // switch and check possible JSON errors
     switch (json_last_error()) {
