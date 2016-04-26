@@ -78,7 +78,7 @@ class DataSource
         if (empty($name) === false && is_string($name) === true) {
             $this->name = $name;
         } else {
-            throw new BalooException('Name must be non empty string!');
+            throw new PackManException('Name must be non empty string!');
         }
     }
 
