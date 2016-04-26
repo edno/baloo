@@ -30,6 +30,16 @@ abstract class DataBaseTestCase extends \PHPUnit_Extensions_Database_TestCase
         return $this->conn;
     }
 
+    final public function getPDO()
+    {
+        return $this->getConnection()->getConnection();
+    }
+
+    public function setUp()
+    {
+        parent::setUp();
+    }
+
     /**
      * Resets the database after each test case.
      *
@@ -45,7 +55,7 @@ abstract class DataBaseTestCase extends \PHPUnit_Extensions_Database_TestCase
      */
     private function initDatabase()
     {
-        $initSQL = file_get_contents(__DIR__.'/../_data/'.$GLOBALS['DB_SQL']);
+        $initSQL = file_get_contents(__ROOT__.'/'.$GLOBALS['PATH_DATA'].$GLOBALS['DB_SQL']);
         self::$pdo->exec($initSQL);
     }
 }

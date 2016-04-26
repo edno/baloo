@@ -1,12 +1,10 @@
 <?xml version="1.0" ?>
 <dataset>
-    <datasourcetype />
 	<datasource />
 	<entitytype />
 	<entityfield />
 	<entityfieldtype />
 	<dataobject />
 	<datavalue />
-	<datablob />
-	<datafile />
+	<datavalueblob />
 </dataset>

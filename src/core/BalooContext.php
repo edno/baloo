@@ -7,29 +7,19 @@ namespace Baloo;
  * Class that manages global BALOO execution context (mandatory).
  */
 
-use Baloo\BalooException;
-
 class BalooContext
 {
     use Singleton;
 
-    public static $debug = false;
+    //public static $tablePrefix = '_';
+    //public static $rootDir = __DIR__;
 
-    private static $folders = array(
-        'lib' => '../lib',
-        'core' => '../core',
-    );
-
-    public static $tablePrefix = '_';
-    public static $rootDir = __DIR__;
-
-    public static $logger = null;
-
-    private static $pdo = null;
+    private $logger = null;
+    private $pdo = null;
 
     protected function __init()
     {
-        self::$logger = new BalooLogger();
+        $this->logger = new BalooLogger();
     }
 
     /**
@@ -41,67 +31,44 @@ class BalooContext
      *      if null load all libraries found in specified folder (default=null)
      * @param string $folder Folder that contains libraries (default='lib')
      *
-     * @return bool
+     * @return true if success
      */
-    public static function loadLibrary($lib = null, $folder = 'lib')
+    public static function loadLibrary($lib = null)
     {
         try {
-            $path = self::folder($folder);
+            $path = dirname(__DIR__).'/lib';
             if (is_null($lib) === true) {
-                $dir = dir($path);
-                while (false !== ($entry = $d->read())) {
-                    include_once $path.'/'.$entry;
+                foreach (new \DirectoryIterator($path) as $file) {
+                    if ($file->isDot()) {
+                        continue;
+                    }
+                    include_once $file->getRealPath();
                 }
-                $d->close();
-                unset($d);
             } else {
                 include_once $path.'/'.$lib.'.php';
             }
-
             return true;
         } catch (\Exception $e) {
-            throw new BalooException('ERROR: Failed to open library '.$lib.' in  folder '.$folder.'!');
+            throw new BalooException("Failed to open library ${lib}!");
         }
-    }
-
-    /**
-     * Get folder full path.
-     *
-     * @static
-     *
-     * @param string $key Folder's name to retreive path
-     *
-     * @return string Folder path
-     */
-    public static function folder($key)
-    {
-        return self::$rootDir.'/'.self::$folders[$key];
-    }
-
-    /**
-     * Get folders list.
-     *
-     * @static
-     *
-     * @return array Folders list
-     */
-    public static function getFolders()
-    {
-        return array_map(
-            function ($folder) {
-                return self::$rootDir.'/'.$folder;
-            },
-            self::$folders
-        );
     }
 
     public function setPDO(\PDO $pdo)
     {
-        self::$pdo = $pdo;
+        $this->pdo = $pdo;
     }
 
     public function getPDO()
     {
-        return self::$pdo;
+        if (get_class($this->pdo) === 'PDO') {
+            return $this->pdo;
+        } else {
+            throw new BalooException("No valid PDO connection");
+        }
+    }
+
+    public function getLogger()
+    {
+        return $this->logger;
     }
 }

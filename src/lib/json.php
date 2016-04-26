@@ -55,3 +55,19 @@ function json_valid(string $strJson)
     // everything is OK
     return true;
 }
+
+function json_decode_file($filepath)
+{
+    if (file_exists($filepath)) {
+        if (is_readable($filepath)) {
+            $string = file_get_contents($filepath);
+            if (json_valid($string)) {
+                return json_decode($string);
+            }
+        } else {
+            throw new BalooException("Cannot read file '${filepath}'");
+        }
+    } else {
+        throw new BalooException("File '${filepath}' not found");
+    }
+}

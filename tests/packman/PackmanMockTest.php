@@ -3,7 +3,6 @@
 namespace Baloo\UnitTests;
 
 use Baloo\Packman\Packman;
-use org\bovigo\vfs\vfsStream;
 
 /**
  * Using mock singleton requires to execute tests in a separate process
@@ -23,34 +22,50 @@ class PackmanMockTest extends Framework\TestCase
 
     public function setUp()
     {
-        $this->packman = Packman::getInstance();
+        // prepare stubs
+        $this->stubBalooContext();
+        $this->stubBalooSourceManager();
+
         // hack the default pack location for testing purpose
+        $this->packman = Packman::getInstance();
         self::setPrivateProperty($this->packman, 'packPath', self::$pathPack);
+    }
+
+    public function stubBalooContext()
+    {
+        // stub pdo connection
+        $stub = $this->getMockFromSingleton(
+            'Baloo\BalooContext',
+            ['getPDO']
+        );
+        $stub->method('getPDO')
+             ->willReturn(new \StdClass());
+    }
+
+    public function stubBalooSourceManager()
+    {
+        $stub = $this->getMockFromSingleton(
+            'Baloo\DataSourceManager',
+            ['getDataSourceByName']
+        );
+        $stub->expects($this->any())
+             ->method('getDataSourceByName')
+             ->willReturn(true);
+        self::setPrivateProperty('Baloo\Packman\Packman', 'dsManager', $stub);
     }
 
     public function tearDown()
     {
     }
+
     /**
      * @covers Baloo\Packman\Packman::installPack
      * @expectedException Baloo\Packman\PackmanException
      * @group public
      * @group mock
      */
-    public function testInstallPackUseMockObjectExceptionPackExist()
+    public function testInstallPackExceptionPackExist()
     {
-        // mock core classes
-        $mockDSManager = $this->getMockFromSingleton(
-            'Baloo\DataSourceManager',
-            ['getDataSourceTypeID',
-                                                      'insertDataSourceType',
-            'getDataSource']
-        );
-        $mockDSManager
-            ->expects($this->at(1))
-            ->method('getDataSource')
-            ->willReturn(true);
-
         $package = 'pack4test';
         $pack = $this->packman->loadPackFile($package);
         $this->packman->installPack($pack);

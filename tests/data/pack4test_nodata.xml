@@ -1,0 +1,15 @@
+<?xml version="1.0" ?>
+<dataset>
+	<datasource id="1" name="Pack 4 Test" version="1.0" />
+	<entitytype id="1" name="entity1" datasource_id="1" />
+    <entitytype id="2" name="entity2" datasource_id="1" />
+    <entitytype id="3" name="entity3" datasource_id="1" />
+    <entityfieldtype id="1" name="integer" format="" />
+    <entityfieldtype id="2" name="string" format="" />
+	<entityfield id="1" name="id" custom="" entitytype_id="1" entityfieldtype_id="1" />
+    <entityfield id="2" name="name" custom="" entitytype_id="1" entityfieldtype_id="2" />
+    <entityfield id="3" name="id" custom="" entitytype_id="2" entityfieldtype_id="1" />
+    <entityfield id="4" name="name" custom="" entitytype_id="2" entityfieldtype_id="2" />
+    <entityfield id="5" name="id" custom="" entitytype_id="3" entityfieldtype_id="1" />
+    <entityfield id="6" name="name" custom="" entitytype_id="3" entityfieldtype_id="2" />
+</dataset>

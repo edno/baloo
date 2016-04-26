@@ -7,7 +7,6 @@
 	"datasource": {
 		"name": "Pack for Test",
 		"version": "1.0",
-		"type": "UnitTest",
 		"entities": [
 			{ "name": "entity1", "properties": [
 					{ "name": "id",	"type": "integer" },
@@ -18,7 +17,7 @@
 					{ "name": "id", "type": "integer" },
 					{ "name": "name", "type": "string" }
 					]
-			},			
+			},
 			{ "name": "entity3", "properties": [
 					{ "name": "id", "type": "integer" },
 					{ "name": "name", "type": "string" }

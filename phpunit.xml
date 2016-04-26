@@ -11,26 +11,22 @@
          syntaxCheck="true">
 
     <php>
-        <var name="DB_SQL" value="db_sqlite.sql" />
+        <var name="DB_SQL" value="db_light.sql" />
         <var name="DB_DSN" value="sqlite::memory:" />
-        <!--var name="DB_DSN" value="sqlite:./tests/tmp/baloo.db3" /-->
+        <!--var name="DB_DSN" value="sqlite:./tmp/baloo.db3" /-->
         <var name="DB_USER" />
         <var name="DB_PASSWD" />
         <var name="DB_DBNAME" />
-        <var name="PATH_DATA" value="/tests/_data/" />
-        <var name="PATH_PACKS" value="/tests/packman/_packs/" />
+        <var name="PATH_DATA" value="/tests/data/" />
+        <var name="PATH_PACKS" value="/tests/data/packs/" />
     </php>
 
     <testsuites>
-        <testsuite name="BALOO Test Suite">
-            <directory>./tests</directory>
-            <exclude>./tests/packman</exclude>
-            <exclude>./tests/framework</exclude>
-            <exclude>./tests/_data</exclude>
+        <testsuite name="Baloo">
+            <directory>./tests/baloo/</directory>
         </testsuite>
-        <testsuite name="PackMan Test Suite">
+        <testsuite name="Packman">
             <directory>./tests/packman/</directory>
-            <exclude>./tests/packman/_packs/</exclude>
         </testsuite>
     </testsuites>
 

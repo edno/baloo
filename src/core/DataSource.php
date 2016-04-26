@@ -8,23 +8,88 @@ namespace Baloo;
  */
 class DataSource
 {
-    protected $id = null;
-    protected $name = null;
-    protected $type = null;
+    protected static $pdo = null;
+
+    private $id = null;
+    private $name = null;
+    private $version = null;
 
     /**
-     * Constructor must be accessed with method getDataSourceByName.
+     * Constructor
      *
-     * @see getDataSourceByName
      */
-    private function __construct()
+    public function __construct($param = null)
     {
-        $this->id = intval($this->id); // force id as integer
+        // instanciate PDO
+        if (is_null(static::$pdo)) {
+            static::$pdo = BalooContext::getInstance()->getPDO();
+        }
+
+        // if param is string then set default instance name
+        if (is_string($param) === true && empty(trim($param)) === false) {
+            $this->name = trim($param);
+        }
+
+        // if param set, then try to retrieve existing datasource
+        if (is_null($param) === false) {
+            if (is_string($param)) { // if string, then retrieve by name
+                $datasource = $this->__getDataSourceByName(trim($param));
+            } elseif (is_numeric($param)) { // if numeric then retrieve by id
+                $datasource = $this->__getDataSourceById(intval($param));
+            } else { // if other type then throw exception
+                throw new BalooException('Invalid parameter type '.gettype($param).' expected string or numeric');
+            }
+            // if valid datasource retrieved then copy properties
+            if (isset($datasource) && $datasource) {
+                $this->id = $datasource->getId();
+                $this->name = $datasource->getName();
+                $this->version = $datasource->getVersion();
+            }
+        }
+        // if no valid name (no instance and invalid param) then throw exception
+        if (is_null($this->name)) {
+            throw new BalooException("Invalid data source name or id '${param}'");
+        }
     }
 
     public function __toString()
     {
-        return $this->getName();
+        return trim($this->getName().' '.$this->getVersion());
+    }
+
+    public function save()
+    {
+        if (is_null($this->id) === false) {
+            $this->__updateDataSource();
+        } else {
+            $this->__insertDataSource();
+        }
+    }
+
+    public function delete()
+    {
+        // @todo
+        //http://stackoverflow.com/questions/5180446/how-to-delete-a-php-object-from-its-class/21367011#21367011
+    }
+
+    public function setName($name)
+    {
+        $name = trim($name);
+        if (empty($name) === false && is_string($name) === true) {
+            $this->name = $name;
+        } else {
+            throw new PackManException('Name must be non empty string!');
+        }
+    }
+
+    public function setVersion($version)
+    {
+        $this->version = strval($version);
+    }
+
+    public function getId()
+    {
+        return intval($this->id);
     }
 
     public function getName()
@@ -32,58 +97,9 @@ class DataSource
         return $this->name;
     }
 
-    public function getID()
+    public function getVersion()
     {
-        return $this->id;
-    }
-
-    /**
-     * Give access to DataSource constructor thru datasource's name.
-     *
-     * @static
-     *
-     * @param string $name Datasource name to get
-     *
-     * @return DataSource|false DataSource object or error
-     */
-    public static function getDataSourceByName($name)
-    {
-        $query = BalooContext::getInstance()->getPDO()->prepare(
-            '
-        SELECT _SOURCE.id AS id, _SOURCE.name AS name, _SOURCE_TYPE.name AS type
-        FROM '.BalooModel::tableDataSource().' AS _SOURCE
-        INNER JOIN '.BalooModel::tableDataSourceType().' AS _SOURCE_TYPE
-        ON _SOURCE_TYPE.id = _SOURCE.'.BalooModel::tableDataSourceType()."_id
-        WHERE _SOURCE.name='".$name."'"
-        );
-        $query->setFetchMode(\PDO::FETCH_CLASS, __NAMESPACE__.'\DataSource');
-        $query->execute();
-
-        $result = $query->fetch(\PDO::FETCH_CLASS);
-        if (is_null($result)) {
-            $result = false;
-        }
-
-        return $result;
-    }
-
-    /**
-     * Give the list of existing datasources.
-     *
-     * @static
-     *
-     * @return array|false array[id,name] of datasource or error
-     */
-    public static function getDataSourceList()
-    {
-        $query = BalooContext::getInstance()->getPDO()->prepare(
-            '
-        SELECT id, name
-        FROM '.BalooModel::tableDataSource()
-        );
-        $query->execute();
-
-        return $query->fetchAll(\PDO::FETCH_ASSOC);
+        return strval($this->version);
     }
 
     /**
@@ -93,47 +109,18 @@ class DataSource
      */
     public function getEntityTypeList()
     {
-        $query = BalooContext::getInstance()->getPDO()->query(
-            '
+        $query = static::$pdo->query('
         SELECT _TYPE.id as id, _TYPE.name as name, _SOURCE.name AS datasourcename
         FROM '.BalooModel::tableEntityType().' AS _TYPE
         INNER JOIN '.BalooModel::tableDataSource().' AS _SOURCE
         ON _SOURCE.id=_TYPE.'.BalooModel::tableDataSource().'_id
-        WHERE _TYPE.'.BalooModel::tableDataSource().'_id='.$this->id
-        );
+        WHERE _TYPE.'.BalooModel::tableDataSource().'_id='.$this->id);
         $query->execute();
 
         return $query->fetchAll(\PDO::FETCH_CLASS, __NAMESPACE__.'\DataEntityType');
     }
 
-    /**
-     * Get specified entity type from current datasource.
-     *
-     * @param string $typeName Entity type name to get
-     *
-     * @return DataEntityType|false DataEntityType object or error
-     */
-    public function getEntityTypeByName($typeName)
-    {
-        $query = BalooContext::getInstance()->getPDO()->prepare(
-            '
-        SELECT _TYPE.id as id, _TYPE.name as name, _SOURCE.name AS datasourcename
-        FROM '.BalooModel::tableEntityType().' AS _TYPE
-        INNER JOIN '.BalooModel::tableDataSource().' AS _SOURCE
-        ON _SOURCE.id=_TYPE.'.BalooModel::tableDataSource().'_id
-        WHERE _TYPE.'.BalooModel::tableDataSource().'_id='.$this->id."
-        AND _TYPE.name='".$typeName."'"
-        );
-        $query->setFetchMode(\PDO::FETCH_CLASS, __NAMESPACE__.'\DataEntityType');
-        $query->execute();
 
-        $result = $query->fetch(\PDO::FETCH_CLASS);
-        if (is_null($result)) {
-            $result = false;
-        }
-
-        return $result;
-    }
 
     /**
      * Give the list of existing entities of any type for current datasource.
@@ -149,7 +136,10 @@ class DataSource
             array_walk(
                 $results,
                 function (&$item, $key, $excludeChildObject) {
-                    $item = array('type' => $item, 'data' => $item->getEntityList($excludeChildObject));
+                    $item = [
+                        'type' => $item,
+                        'data' => $item->getEntityList($excludeChildObject)
+                    ];
                 },
                 $excludeChildObject
             );
@@ -171,8 +161,72 @@ class DataSource
         return $this->getEntityTypeByName($typeName)->getEntityList($excludeChildObject);
     }
 
-    public function getDataSourceType()
+    private function __updateDataSource()
     {
-        return $this->type;
+        $query = static::$pdo->prepare('
+        UPDATE '.BalooModel::tableDataSource().'
+        SET name=:name, version=:version
+        WHERE id='.$this->id);
+        $result = $query->execute([':name' => $this->name, ':version' => $this->version]);
+
+        if ($result === false) {
+            throw new BalooException("Error Processing Request", 1);
+        }
+        return $result;
+    }
+
+    private function __insertDataSource()
+    {
+        $query = static::$pdo->prepare('
+        INSERT INTO '.BalooModel::tableDataSource().' (name, version)
+        VALUES (:name, :version)
+        ');
+        $result = $query->execute([':name' => $this->name, ':version' => $this->version]);
+
+        $this->id = static::$pdo->lastInsertId();
+
+        if ($result === false) {
+            throw new BalooException("Error Processing Request", 1);
+        }
+        return $result;
+    }
+
+    private function __getDataSourceByName($name)
+    {
+        return $this->__getDataSourceByColumn('name', $name);
+    }
+
+    private function __getDataSourceById($id)
+    {
+        return $this->__getDataSourceByColumn('id', $id);
+    }
+
+    /**
+     * Retrieve existing datasource by name
+     *
+     * @param string $name Datasource name to get
+     *
+     * @return DataSource|false DataSource object or error
+     */
+    private function __getDataSourceByColumn($column, $value)
+    {
+        $query = static::$pdo->prepare('
+        SELECT _SOURCE.id AS id, _SOURCE.name AS name, _SOURCE.version AS version
+        FROM '.BalooModel::tableDataSource()." AS _SOURCE
+        WHERE _SOURCE.${column}=:value");
+        $query->setFetchMode(\PDO::FETCH_CLASS, __NAMESPACE__.'\DataSource');
+        $query->execute([':value' => $value]);
+
+        $result = $query->fetch(\PDO::FETCH_CLASS);
+        if (is_null($result)) {
+            $result = false;
+        }
+
+        return $result;
+    }
+
+    private function __deleteDataSource()
+    {
+
     }
 }

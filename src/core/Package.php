@@ -9,7 +9,6 @@ namespace Baloo\Packman;
  * @package Packman
  */
 
-use Baloo\Packman\PackmanException;
 use Baloo\BalooContext;
 
 // @codingStandardsIgnoreStart

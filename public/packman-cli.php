@@ -4,20 +4,19 @@ require_once __DIR__.'/../vendor/autoload.php';
 use Baloo\Packman\Packman;
 use Baloo\Packman\PackmanException;
 use Baloo\BalooContext;
-use Baloo\BalooPDO;
 
 BalooContext::loadLibrary('console'); // workaround for non-class namespace
 use Baloo\Lib\Console;
 
 if (Console\ISCLI === true) {
     try {
-        new BalooContext(new BalooPDO(null, null, null, null, 'memory'));
+        new BalooContext(new \PDO('sqlite:/tmp/baloo.db'));
 
         echo PHP_EOL.PHP_EOL;
         echo '-------'.Packman::NAME.'-------'.PHP_EOL;
         echo PHP_EOL.PHP_EOL;
         echo '> Package to install? ';
-        $file = Console\readConsole();
+        $file = Console\read_console();
 
         echo 'INFO: Loading "'.$file.'"...'.PHP_EOL;
         $pack = Packman::loadPackFile($file);
@@ -30,7 +29,7 @@ if (Console\ISCLI === true) {
             if ($e->getCode() == 100 || $e->getCode() == 101) {
                 echo 'INFO: '.$e->getMessage().PHP_EOL.PHP_EOL;
                 echo '> Overwrite current "'.$file.'" package (y|n)? ';
-                $response = Console\readConsole();
+                $response = Console\read_console();
                 if (preg_match('/y/i', $response)) {
                     Packman::removePack($pack);
                     $status = Packman::installPack($pack);

@@ -9,7 +9,7 @@ namespace Baloo;
  * @package baloo
  */
 
-class DataEntityType extends StaticProxy
+class DataEntityType
 {
     protected $id = null;
     protected $name = null;
@@ -44,7 +44,7 @@ class DataEntityType extends StaticProxy
         return $this->name;
     }
 
-    public function getID()
+    public function getId()
     {
         return $this->id;
     }
@@ -58,12 +58,10 @@ class DataEntityType extends StaticProxy
      */
     public static function getEntityTypeNameById($id)
     {
-        $query = BalooContext::getInstance()->getPDO()->prepare(
-            '
+        $query = BalooContext::getInstance()->getPDO()->prepare('
         SELECT name
         FROM '.BalooModel::tableEntityType().' AS _TYPE
-        WHERE _TYPE.id='.$id
-        );
+        WHERE _TYPE.id='.$id);
         $query->execute();
 
         return $query->fetchColumn();
@@ -78,16 +76,44 @@ class DataEntityType extends StaticProxy
      */
     public static function getEntityTypeIdByName($name)
     {
-        $query = BalooContext::getInstance()->getPDO()->prepare(
-            '
+        $query = BalooContext::getInstance()->getPDO()->prepare('
         SELECT id
         FROM '.BalooModel::tableEntityType()." AS _TYPE
-        WHERE _TYPE.name='".$name."'"
-        );
+        WHERE _TYPE.name='".$name."'");
         $query->execute();
 
         return $query->fetchColumn();
     }
+
+    /**
+     * Get specified entity type from current datasource.
+     *
+     * @param string $typeName Entity type name to get
+     *
+     * @return DataEntityType|false DataEntityType object or error
+     *
+     * @todo Refactor code (moved from DataSource)
+     */
+    public function getEntityTypeByName($typeName)
+    {
+        $query = static::$pdo->prepare('
+        SELECT _TYPE.id as id, _TYPE.name as name, _SOURCE.name AS datasourcename
+        FROM '.BalooModel::tableEntityType().' AS _TYPE
+        INNER JOIN '.BalooModel::tableDataSource().' AS _SOURCE
+        ON _SOURCE.id=_TYPE.'.BalooModel::tableDataSource().'_id
+        WHERE _TYPE.'.BalooModel::tableDataSource().'_id='.$this->id."
+        AND _TYPE.name='${typeName}'");
+        $query->setFetchMode(\PDO::FETCH_CLASS, __NAMESPACE__.'\DataEntityType');
+        $query->execute();
+
+        $result = $query->fetch(\PDO::FETCH_CLASS);
+        if (is_null($result)) {
+            $result = false;
+        }
+
+        return $result;
+    }
+
 
     /**
      * Give the list of properties for current entity type.
@@ -96,16 +122,14 @@ class DataEntityType extends StaticProxy
      */
     public function getEntityTypePropertyList()
     {
-        $query = BalooContext::getInstance()->getPDO()->prepare(
-            '
+        $query = BalooContext::getInstance()->getPDO()->prepare('
         SELECT _FIELD.name AS name, _FIELD.custom AS iscustom, _PROP.name AS type, _PROP.format AS format
         FROM '.BalooModel::tableEntityField().' AS _FIELD
         INNER JOIN '.BalooModel::tableEntityType().' AS _TYPE
         ON _TYPE.id=_FIELD.'.BalooModel::tableEntityType().'_id
         INNER JOIN '.BalooModel::tableEntityFieldInfo().' AS _PROP
         ON _PROP.id=_FIELD.'.BalooModel::tableEntityFieldInfo().'_id
-        WHERE _TYPE.id='.$this->id
-        );
+        WHERE _TYPE.id='.$this->id);
         $query->execute();
 
         return $query->fetchAll(\PDO::FETCH_ASSOC);
@@ -113,13 +137,11 @@ class DataEntityType extends StaticProxy
 
     public static function getTypePropertyId($name)
     {
-        $query = BalooContext::getInstance()->getPDO()->prepare(
-            '
+        $query = BalooContext::getInstance()->getPDO()->prepare('
         SELECT id
         FROM '.BalooModel::tableEntityFieldInfo().'
         WHERE name=:name
-        '
-        );
+        ');
         $query->execute(array(':name' => $name));
 
         return (integer) $query->fetchColumn();
@@ -134,12 +156,10 @@ class DataEntityType extends StaticProxy
      */
     public static function getPropertyTypesList()
     {
-        $query = BalooContext::getInstance()->getPDO()->prepare(
-            '
+        $query = BalooContext::getInstance()->getPDO()->prepare('
         SELECT _PROP.id AS id, _PROP.name AS name, _PROP.format AS format
         FROM '.BalooModel::tableEntityFieldInfo().' AS _PROP
-        '
-        );
+        ');
         $query->execute();
 
         return $query->fetchAll(\PDO::FETCH_ASSOC);
@@ -157,8 +177,7 @@ class DataEntityType extends StaticProxy
         } else {
             $propertyIdentifier = "name='".$identifier."'";
         }
-        $query = BalooContext::getInstance()->getPDO()->prepare(
-            '
+        $query = BalooContext::getInstance()->getPDO()->prepare('
         SELECT _PROP.name AS type, _PROP.format AS format
         FROM '.BalooModel::tableEntityField().' AS _FIELD
         INNER JOIN '.BalooModel::tableEntityType().' AS _TYPE
@@ -166,8 +185,7 @@ class DataEntityType extends StaticProxy
         INNER JOIN '.BalooModel::tableEntityFieldInfo().' AS _PROP
         ON _PROP.id=_FIELD.'.BalooModel::tableEntityFieldInfo().'_id
         WHERE _TYPE.id='.$this->id.'
-        AND _FIELD.'.$propertyIdentifier
-        );
+        AND _FIELD.'.$propertyIdentifier);
         $query->execute();
 
         $result = $query->fetch(\PDO::FETCH_ASSOC);
@@ -191,14 +209,12 @@ class DataEntityType extends StaticProxy
         if ($excludeChildObject === true) {
             $condition .= ' AND _DATA.parent_id=0';
         }
-        $query = BalooContext::getInstance()->getPDO()->prepare(
-            '
+        $query = BalooContext::getInstance()->getPDO()->prepare('
         SELECT _DATA.id, _DATA.'.BalooModel::tableEntityType().'_id as typeId
         FROM '.BalooModel::tableEntityObject().' AS _DATA
         INNER JOIN '.BalooModel::tableEntityType().' AS _TYPE
         ON _TYPE.id = _DATA.'.BalooModel::tableEntityType().'_id
-        WHERE _TYPE.id='.$this->id.$condition
-        );
+        WHERE _TYPE.id='.$this->id.$condition);
         $query->execute();
 
         return $query->fetchAll(\PDO::FETCH_CLASS, __NAMESPACE__.'\DataEntity');
@@ -235,7 +251,7 @@ class DataEntityType extends StaticProxy
                             $query .= ' OR ';
                         }
 
-                                                        return $query .= "_VALUE.value='".$value."'";
+                        return $query .= "_VALUE.value='".$value."'";
                     },
                     ''
                 );
@@ -258,15 +274,13 @@ class DataEntityType extends StaticProxy
                 $childCondition .= ' AND _DATA.parent_id=0';
             }
 
-            $query = BalooContext::getInstance()->getPDO()->prepare(
-                '
+            $query = BalooContext::getInstance()->getPDO()->prepare('
             SELECT DISTINCT _DATA.id, _DATA.'.BalooModel::tableEntityType().'_id AS typeId
             FROM '.BalooModel::tableEntityObject().' AS _DATA
             INNER JOIN '.BalooModel::tableEntityType().' AS _TYPE
             ON _TYPE.id = _DATA.'.BalooModel::tableEntityType().'_id
             WHERE _TYPE.id='.$this->id.'
-            AND '.$filterCondition.$childCondition
-            );
+            AND '.$filterCondition.$childCondition);
             $query->execute();
 
             return $query->fetchAll(\PDO::FETCH_CLASS, __NAMESPACE__.'\DataEntity');

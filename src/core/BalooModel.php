@@ -11,6 +11,8 @@ namespace Baloo;
 
 final class BalooModel
 {
+    use Singleton;
+
     private static $table = array(
         'datasource' => 'datasource',
         'datasourcetype' => 'datasourcetype',
@@ -23,20 +25,6 @@ final class BalooModel
         'entityobjectfile' => 'datafile',
     );
 
-    // Make magic method as protected
-    protected function __construct()
-    {
-    }
-    protected function __clone()
-    {
-    }
-    protected function __wakeup()
-    {
-    }
-    protected function __sleep()
-    {
-    }
-
     public static function __callStatic($name, $arg)
     {
         $matches = array();
@@ -46,7 +34,6 @@ final class BalooModel
         $var = $matches[1];
         if (isset($matches[2])) {
             $key = strtolower($matches[2]);
-
             return static::${$var}[$key];
         } else {
             return static::${$var};

@@ -8,7 +8,8 @@ namespace Baloo\UnitTests\Framework;
 trait MockSingleton
 {
     public function getMockFromSingleton(
-        $type, $methods = array(),
+        $type,
+        $methods = array(),
         array $arguments = array(),
         $mockClassName = '',
         $callAutoload = true,
@@ -16,7 +17,6 @@ trait MockSingleton
         $callOriginalMethods = false,
         $proxyTarget = null
     ) {
-
         $mock = call_user_func(
             'self::getMock',
             $type,
@@ -30,9 +30,7 @@ trait MockSingleton
             $callOriginalMethods,
             $proxyTarget
         );
-        $ref = new \ReflectionProperty($type, 'instance');
-        $ref->setAccessible(true);
-        $ref->setValue(null, $mock);
+        self::setPrivateProperty($type, 'instance', $mock);
         return $mock;
     }
 }

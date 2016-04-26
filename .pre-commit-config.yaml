@@ -5,8 +5,6 @@
     -   id: php-unit
     -   id: php-cs
         files: \.(php)$
-        args:
-        - --standard=PSR2
     -   id: php-cbf
         files: \.(php)$
         args:

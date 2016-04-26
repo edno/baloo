@@ -6,6 +6,14 @@ use Baloo\Packman\Package;
 
 class PackageTest extends Framework\TestCase
 {
+    public function setUp()
+    {
+    }
+
+    public function tearDown()
+    {
+    }
+
     /**
      * @covers Baloo\Packman\Package
      */

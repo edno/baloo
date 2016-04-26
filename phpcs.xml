@@ -4,4 +4,8 @@
 
      <!-- Include the whole PSR-2 standard -->
     <rule ref="PSR2"/>
+    <rule ref="PSR2.Files.SideEffects">
+        <type>error</type>
+        <message>Blabbla</message>
+    </rule>
 </ruleset>

@@ -20,10 +20,14 @@ class PackmanTest extends Framework\DatabaseTestCase
 
     public function setUp()
     {
-        $pdo = $this->getConnection()->getConnection();
-        \Baloo\BalooContext::getInstance()->setPDO($pdo);
+        parent::setUp();
 
+        // set database connection
+        \Baloo\BalooContext::getInstance()->setPDO($this->getPDO());
+
+        // get Packman singleton
         $this->packman = Packman::getInstance();
+
         // hack the default pack location for testing purpose
         self::setPrivateProperty($this->packman, 'packPath', self::$pathPack);
     }
@@ -37,7 +41,17 @@ class PackmanTest extends Framework\DatabaseTestCase
      */
     public function getDataSet()
     {
-        return $this->createFlatXMLDataSet(self::$packData.'ds_empty.xml');
+        return new \PHPUnit_Extensions_Database_DataSet_DefaultDataSet();
+        //return $this->createFlatXMLDataSet(self::$packData.'ds_empty.xml');
+    }
+
+    /**
+     * @covers Baloo\Packman\Packman::getInstance
+     * @group public
+     */
+    public function testGetInstance()
+    {
+        $this->assertInstanceOf('\Baloo\Packman\Packman', $this->packman);
     }
 
     /**
@@ -47,7 +61,7 @@ class PackmanTest extends Framework\DatabaseTestCase
     public function testGetPackFileUseJson()
     {
         $package = 'pack4test';
-        $result = self::invokePrivateMethod($this->packman, '__getPackFile', $package);
+        $result = $this->invokePrivateMethod($this->packman, '__getPackFile', $package);
         $this->assertEquals(self::$pathPack."${package}.pack.json", $result);
     }
 
@@ -58,7 +72,7 @@ class PackmanTest extends Framework\DatabaseTestCase
     public function testGetPackFileUseGzip()
     {
         $package = 'pack4test';
-        $result = self::invokePrivateMethod($this->packman, '__getPackFile', "${package}_gz");
+        $result = $this->invokePrivateMethod($this->packman, '__getPackFile', "${package}_gz");
         $this->assertEquals(self::$pathPack."${package}_gz.pack.json.gz", $result);
     }
 
@@ -70,7 +84,7 @@ class PackmanTest extends Framework\DatabaseTestCase
     public function testGetPackFileExceptionNotPresent()
     {
         $package = 'nofile';
-        $result = self::invokePrivateMethod($this->packman, '__getPackFile', $package);
+        $result = $this->invokePrivateMethod($this->packman, '__getPackFile', $package);
     }
 
     /**
@@ -85,7 +99,7 @@ class PackmanTest extends Framework\DatabaseTestCase
         $root = vfsStream::setup('packs');
         $file = vfsStream::newFile("${package}.pack.json", 0000)->at($root);
         self::setPrivateProperty($this->packman, 'packPath', $root->path());
-        $result = self::invokePrivateMethod($this->packman, '__getPackFile', $package);
+        $result = $this->invokePrivateMethod($this->packman, '__getPackFile', $package);
     }
 
     /**
@@ -97,7 +111,7 @@ class PackmanTest extends Framework\DatabaseTestCase
     {
         $package = 'package';
         self::setPrivateProperty($this->packman, 'packPath', __DIR__.'/notexist/');
-        $result = self::invokePrivateMethod($this->packman, '__getPackFile', $package);
+        $result = $this->invokePrivateMethod($this->packman, '__getPackFile', $package);
     }
 
     /**
@@ -111,7 +125,7 @@ class PackmanTest extends Framework\DatabaseTestCase
         $root = vfsStream::setup('packs', 0000);
         $file = vfsStream::newFile("${package}.pack.json")->at($root);
         self::setPrivateProperty($this->packman, 'packPath', $root->path());
-        $result = self::invokePrivateMethod($this->packman, '__getPackFile', $package);
+        $result = $this->invokePrivateMethod($this->packman, '__getPackFile', $package);
     }
 
     /**
@@ -135,7 +149,16 @@ class PackmanTest extends Framework\DatabaseTestCase
      */
     public function testLoadPackFileUseGzip()
     {
+        $gz_file = function ($package) {
+
+            $data = file_get_contents(self::$pathPack."${package}.pack.json");
+            $gzip = gzopen(self::$pathPack."${package}_gz.pack.json.gz", "w9");
+            gzwrite($gzip, $data);
+            gzclose($gzip);
+        };
+
         $package = 'pack4test';
+        $gz_file($package);
         $pack = $this->packman->loadPackFile("${package}_gz");
         $this->assertJsonStringEqualsJsonFile(self::$pathPack."${package}.pack.json", json_encode($pack));
         $this->assertInstanceOf('Baloo\Packman\Package', $pack);
@@ -168,15 +191,20 @@ class PackmanTest extends Framework\DatabaseTestCase
     /**
      * @covers Baloo\Packman\Packman::installPack
      * @depends Baloo\UnitTests\PackmanTest::testLoadPackFileUseJson
+     * @depends Baloo\UnitTests\DataSourceManagerTest::testGetDataSourceByName
      * @group public
      */
     public function testInstallPack()
     {
-        $package = 'pack4test';
-        $this->assertFalse(\Baloo\DataSourceManager::getInstance()->getDataSource($package));
-        $pack = $this->packman->loadPackFile($package);
+        $package = [ 'pack' => 'pack4test', 'name' => 'Pack 4 Test'];
+        $datasource = \Baloo\DataSourceManager::getInstance()->getDataSourceByName($package['name']);
+        $this->assertFalse($datasource);
+        $pack = $this->packman->loadPackFile($package['pack']);
         $result = $this->packman->installPack($pack);
         $this->assertTrue($result);
+        $current = $this->getConnection()->createDataSet();
+        $excepted = $this->createFlatXmlDataSet(self::$pathData.$package['pack'].'_nodata.xml');
+        $this->assertDataSetsEqual($excepted, $current);
     }
 
     /**

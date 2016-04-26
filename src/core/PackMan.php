@@ -8,9 +8,8 @@ namespace Baloo\Packman;
  * @package Packman
  */
 
-use Baloo\Packman\Package;
-use Baloo\Packman\PackManException;
 use Baloo\DataSourceManager;
+use Baloo\DataSource;
 use Baloo\BalooContext;
 use Baloo\DataEntityType;
 
@@ -30,6 +29,22 @@ class PackMan
     const GZIP_EXT = '.pack.json.gz';
 
     private static $packPath = __DIR__.'/../../public/packs/';
+
+    protected static $pdo = null;
+    protected static $dsManager = null;
+
+    private function __init()
+    {
+        // instanciate PDO
+        if (is_null(static::$pdo)) {
+            static::$pdo = BalooContext::getInstance()->getPDO();
+        }
+
+        // instanciate DataSource manager
+        if (is_null(static::$dsManager)) {
+            static::$dsManager = DataSourceManager::getInstance();
+        }
+    }
 
     public function listPackFile($bNotInstalledOnly = false)
     {
@@ -79,22 +94,11 @@ class PackMan
         $result = false;
 
         try {
-            if (isset($pack->datasourcetype)) {
-                if ((bool)DataSourceManager::getInstance()->getDataSourceTypeID(
-                    $pack->datasourcetype->name
-                ) === false) {
-                    // if failed no consequence
-                    DataSourceManager::getInstance()->insertDataSourceType(
-                        $pack->datasourcetype->name,
-                        $pack->datasourcetype->version
-                    );
-                }
-            }
             if (isset($pack->datasource)) {
-                if (DataSourceManager::getInstance()->getDataSource($pack->datasource->name) !== false) {
+                if (static::$dsManager->getDataSourceByName($pack->datasource->name) !== false) {
                     throw new PackManException('Datasource "'. $pack->datasource->name .'" already exists.', 100);
                 } else {
-                    $result = $this->__createDataSourceFromPack($pack->datasource) || $result;
+                    $result = $this->__createDataSourceFromPack($pack->datasource, $type) || $result;
                 }
             }
         } catch (Exception $e) {
@@ -113,52 +117,50 @@ class PackMan
     {
         $result = false;
         if (is_null($pack) === false) {
-            if (DataSourceManager::getInstance()->getDataSource($pack->datasource->name) === false) {
+            if (static::$dsManager->getDataSourceByName($pack->datasource->name) === false) {
                 throw new PackManException('Datasource "'. $pack->datasource->name .'" doesn\'t exist.', 200);
             } else {
-                BalooContext::getInstance()->getPDO()->beginTransaction();
+                static::$pdo->beginTransaction();
 
-                DataSourceManager::getInstance()->deleteEntityProperties($pack->datasource->name);
-                DataSourceManager::getInstance()->deleteEntityTypes($pack->datasource->name);
+                static::$dsManager->deleteEntityProperties($pack->datasource->name);
+                static::$dsManager->deleteEntityTypes($pack->datasource->name);
 
                 if ($removeDSType === true) {
-                    DataSourceManager::getInstance()->deleteDataSourceType($pack->datasource->name);
+                    static::$dsManager->deleteDataSourceType($pack->datasource->name);
                 }
-                DataSourceManager::getInstance()->deleteDataSource($pack->datasource->name);
+                static::$dsManager->deleteDataSource($pack->datasource->name);
 
-                $result = BalooContext::getInstance()->getPDO()->commit();
+                $result = static::$pdo->commit();
             }
         }
 
         return (bool)$result;
     }
 
-    private function __createDataSourceFromPack($datasource)
+    private function __createDataSourceFromPack($datasource, $type = null)
     {
         if (is_object($datasource)) {
-            $dsID = DataSourceManager::getInstance()->insertDataSource(
-                $datasource->name,
-                $datasource->version,
-                $datasource->type
-            );
+            $ds = new DataSource($datasource->name);
+            $ds->setVersion($datasource->version);
+            $ds->save();
         } else {
             throw new PackManException('Invalid datasource object.');
         }
 
-        BalooContext::getInstance()->getPDO()->beginTransaction();
+        static::$pdo->beginTransaction();
         $propTypes = $this->__listPackPropertyTypes($datasource->entities);
         foreach ($propTypes as $type) {
             list($name, $format) = $type;
-            DataSourceManager::getInstance()->insertDataTypeFieldType($name, $format);
+            static::$dsManager->insertDataTypeFieldType($name, $format);
         }
-        $result = BalooContext::getInstance()->getPDO()->commit();
+        $result = static::$pdo->commit();
 
         if ($result) {
             foreach ($datasource->entities as $type) {
-                $typeID = DataSourceManager::getInstance()->insertDataType($dsID, $type->name);
-                BalooContext::getInstance()->getPDO()->beginTransaction();
+                $typeID = static::$dsManager->insertDataType($ds->getId(), $type->name);
+                static::$pdo->beginTransaction();
                 foreach ($type->properties as $property) {
-                    DataSourceManager::getInstance()->insertDataTypeField(
+                    static::$dsManager->insertDataTypeField(
                         $typeID,
                         $property->name,
                         $property->type,
@@ -166,7 +168,7 @@ class PackMan
                         (isset($item->custom)?$item->custom:0)
                     );
                 }
-                $result = BalooContext::getInstance()->getPDO()->commit();
+                $result = static::$pdo->commit();
             }
         }
 
@@ -186,7 +188,7 @@ class PackMan
                         array($item->type,
                         (isset($item->format)?$item->format:null))
                     );
-                                         return $result;
+                    return $result;
                 },
                 $list
             );

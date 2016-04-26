@@ -5,9 +5,11 @@ composer.phar
 composer.lock
 /vendor/
 /bin/
+/log/
+/tmp/
 
 ### Temp test data ###
-/tests/tmp/
+/tests/data/packs/*.gz
 
 ### Temporary ignore packs and modules ###
 /public/packs/

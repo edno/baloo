@@ -32,4 +32,8 @@ trait Singleton
     final private function __clone()
     {
     }
+
+    final private function __sleep()
+    {
+    }
 }

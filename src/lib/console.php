@@ -2,9 +2,9 @@
 
 namespace Baloo\Lib\Console;
 
-const ISCLI = (PHP_SAPI === 'cli');
+defined('ISCLI') or define('ISCLI', PHP_SAPI === 'cli');
 
-function readConsole()
+function read_console()
 {
     return trim(fgets(STDIN));
 }
