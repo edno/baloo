@@ -1,5 +1,5 @@
 {
-        "name": "baloo",
+        "name": "Baloo",
         "description": "Basic Abstraction Layer Object Oriented for PHP",
         "license": "Apache-2.0",
         "keywords": ["pdo","database","abstraction"],
