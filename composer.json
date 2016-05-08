@@ -39,7 +39,7 @@
         "bin-dir": "bin/"
     },
     "scripts": {
-        "post-install-cmd": "pre-commit install",
-        "post-update-cmd": "pre-commit autoupdate"
+        "post-install-cmd": "if command -v pre-commit 2>/dev/null; then pre-commit install; fi;",
+        "post-update-cmd": "if command -v pre-commit 2>/dev/null; then pre-commit autoupdate; fi;"
     }
 }
