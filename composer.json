@@ -32,7 +32,8 @@
         "squizlabs/php_codesniffer": "*",
         "fabpot/php-cs-fixer": "*",
         "pdepend/pdepend" : "*",
-        "phpmd/phpmd" : "*"
+        "phpmd/phpmd" : "*",
+        "phpunit/php-code-coverage": "*"
     },
     "config": {
         "bin-dir": "bin/"

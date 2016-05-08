@@ -8,7 +8,19 @@
          convertWarningsToExceptions="true"
          processIsolation="false"
          stopOnFailure="false"
-         syntaxCheck="true">
+         syntaxCheck="true"
+         verbose="true">
+
+     <filter>
+       <whitelist processUncoveredFilesFromWhitelist="true" addUncoveredFilesFromWhitelist="false">
+         <directory suffix=".php">src/</directory>
+       </whitelist>
+     </filter>
+
+     <logging>
+         <log type="coverage-html" target="tmp/coverage"/>
+         <log type="coverage-text" target="php://stdout" showOnlySummary="true"/>
+     </logging>
 
     <php>
         <var name="DB_SQL" value="db_light.sql" />

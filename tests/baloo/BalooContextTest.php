@@ -15,7 +15,7 @@ class BalooContextTest extends Framework\TestCase
     }
 
     /**
-     * @covers Baloo\BalooContext:getInstance
+     * @covers Baloo\BalooContext::getInstance
      * @group public
      */
     public function testGetInstance()
@@ -25,7 +25,7 @@ class BalooContextTest extends Framework\TestCase
     }
 
     /**
-     * @covers Baloo\BalooContext:getPDO
+     * @covers Baloo\BalooContext::getPDO
      * @expectedException Baloo\BalooException
      * @group public
      */

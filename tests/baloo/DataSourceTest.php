@@ -34,7 +34,7 @@ class DataSourceTest extends Framework\DatabaseTestCase
     }
 
     /**
-     * @cover Baloo\DataSourceManager::__getDataSourceByColumn
+     * @cover Baloo\DataSource::__getDataSourceByColumn
      * @dataProvider providerColumnsValues
      */
     public function testGetDataSourceByColumn($column, $value)
@@ -48,7 +48,7 @@ class DataSourceTest extends Framework\DatabaseTestCase
     }
 
     /**
-     * @cover Baloo\DataSourceManager::__getDataSourceByColumn
+     * @cover Baloo\DataSource::__getDataSourceByColumn
      */
     public function testGetDataSourceByColumnWithNoRecord()
     {
