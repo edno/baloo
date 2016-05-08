@@ -39,7 +39,7 @@
         "bin-dir": "bin/"
     },
     "scripts": {
-        "post-install-cmd": "if command -v pre-commit 2>/dev/null; then pre-commit install; fi;",
-        "post-update-cmd": "if command -v pre-commit 2>/dev/null; then pre-commit autoupdate; fi;"
+        "post-install-cmd": "if command -v pre-commit &>/dev/null; then pre-commit install; else echo 'pre-commit not available - skipped'; fi;",
+        "post-update-cmd": "if command -v pre-commit &>/dev/null; then pre-commit autoupdate; else echo 'pre-commit not available - skipped'; fi;"
     }
 }
