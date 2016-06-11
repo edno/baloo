@@ -85,7 +85,7 @@ class PackMan
         } elseif (is_readable(self::$packPath.$strPack.self::GZIP_EXT)) {
             return self::$packPath.$strPack.self::GZIP_EXT;
         } else {
-            throw new PackManException('Package "'. $strPack .'" not accessible in directory "'. self::$packPath .'"');
+            throw new PackManException('Package "'.$strPack.'" not accessible in directory "'.self::$packPath.'"');
         }
     }
 
@@ -96,7 +96,7 @@ class PackMan
         try {
             if (isset($pack->datasource)) {
                 if (static::$dsManager->getDataSourceByName($pack->datasource->name) !== false) {
-                    throw new PackManException('Datasource "'. $pack->datasource->name .'" already exists.', 100);
+                    throw new PackManException('Datasource "'.$pack->datasource->name.'" already exists.', 100);
                 } else {
                     $result = $this->__createDataSourceFromPack($pack->datasource, $type) || $result;
                 }
@@ -105,7 +105,7 @@ class PackMan
             throw $e;
         }
 
-        return (bool)$result;
+        return (bool) $result;
     }
 
     public function dumpPack(string $name)
@@ -118,7 +118,7 @@ class PackMan
         $result = false;
         if (is_null($pack) === false) {
             if (static::$dsManager->getDataSourceByName($pack->datasource->name) === false) {
-                throw new PackManException('Datasource "'. $pack->datasource->name .'" doesn\'t exist.', 200);
+                throw new PackManException('Datasource "'.$pack->datasource->name.'" doesn\'t exist.', 200);
             } else {
                 static::$pdo->beginTransaction();
 
@@ -134,7 +134,7 @@ class PackMan
             }
         }
 
-        return (bool)$result;
+        return (bool) $result;
     }
 
     private function __createDataSourceFromPack($datasource, $type = null)
@@ -164,15 +164,15 @@ class PackMan
                         $typeID,
                         $property->name,
                         $property->type,
-                        (isset($item->format)?$item->format:null),
-                        (isset($item->custom)?$item->custom:0)
+                        (isset($item->format) ? $item->format : null),
+                        (isset($item->custom) ? $item->custom : 0)
                     );
                 }
                 $result = static::$pdo->commit();
             }
         }
 
-        return (bool)$result;
+        return (bool) $result;
     }
 
     private function __listPackPropertyTypes($entities)
@@ -182,11 +182,11 @@ class PackMan
         foreach ($entities as $type) {
             $list = array_reduce(
                 $type->properties,
-                function ($result, $item) {
+                function($result, $item) {
                     array_push(
                         $result,
                         array($item->type,
-                        (isset($item->format)?$item->format:null))
+                        (isset($item->format) ? $item->format : null))
                     );
                     return $result;
                 },
@@ -201,7 +201,7 @@ class PackMan
         $existingTypes = DataEntityType::getPropertyTypesList();
         array_walk(
             $existingTypes,
-            function (&$item, $key) {
+            function(&$item, $key) {
                 array_shift($item);
                 $item = array_values($item);
             }

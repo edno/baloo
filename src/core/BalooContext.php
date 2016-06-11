@@ -29,9 +29,8 @@ class BalooContext
      *
      * @param string $lib    Name (without suffix) of the library to be loaded,
      *      if null load all libraries found in specified folder (default=null)
-     * @param string $folder Folder that contains libraries (default='lib')
      *
-     * @return true if success
+     * @return boolean if success
      */
     public static function loadLibrary($lib = null)
     {

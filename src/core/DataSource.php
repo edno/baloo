@@ -135,7 +135,7 @@ class DataSource
         if ($results) {
             array_walk(
                 $results,
-                function (&$item, $key, $excludeChildObject) {
+                function(&$item, $key, $excludeChildObject) {
                     $item = [
                         'type' => $item,
                         'data' => $item->getEntityList($excludeChildObject)
@@ -191,11 +191,17 @@ class DataSource
         return $result;
     }
 
+    /**
+     * @param string $name
+     */
     private function __getDataSourceByName($name)
     {
         return $this->__getDataSourceByColumn('name', $name);
     }
 
+    /**
+     * @param integer $id
+     */
     private function __getDataSourceById($id)
     {
         return $this->__getDataSourceByColumn('id', $id);
@@ -204,8 +210,8 @@ class DataSource
     /**
      * Retrieve existing datasource by name
      *
-     * @param string $name Datasource name to get
      *
+     * @param string $column
      * @return DataSource|false DataSource object or error
      */
     private function __getDataSourceByColumn($column, $value)
