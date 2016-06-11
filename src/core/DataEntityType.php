@@ -17,7 +17,7 @@ class DataEntityType
     /**
      * Constructor.
      *
-     * @param mixed $identifier Name or ID of entity type object to get,
+     * @param integer $identifier Name or ID of entity type object to get,
      *              can be Null if called from PDO query (default=null)
      */
     public function __construct($identifier = null)
@@ -54,6 +54,7 @@ class DataEntityType
      *
      * @static
      *
+     * @param integer $id
      * @return int|false ID of entity type or error
      */
     public static function getEntityTypeNameById($id)
@@ -135,6 +136,9 @@ class DataEntityType
         return $query->fetchAll(\PDO::FETCH_ASSOC);
     }
 
+    /**
+     * @param integer $name
+     */
     public static function getTypePropertyId($name)
     {
         $query = BalooContext::getInstance()->getPDO()->prepare('
@@ -246,7 +250,7 @@ class DataEntityType
                 // parse value list of each properties and return a SQL sub criteria
                 $valueQuery = array_reduce(
                     $values,
-                    function ($query, $value) {
+                    function($query, $value) {
                         if ($query != '') {
                             $query .= ' OR ';
                         }
